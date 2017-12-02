@@ -7,13 +7,9 @@ body {
 	background-color: rgb(64, 64, 64);
 }
 
-.player-row {
-
-}
-
 .player-icon {
-  width: 160px;
   position: relative;
+  width: 160px;
 }
 
 .player-icon img {
