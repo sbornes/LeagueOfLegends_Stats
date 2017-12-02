@@ -1,0 +1,21 @@
+{
+  "name": "Jquery",
+  "version": "1.0.0",
+  "description": "Jquery package.json",
+
+  "standard": {
+    "globals": [
+      "$"
+    ]
+  },
+  "eslintConfig": {
+    "env": {
+          "browser": true
+      },
+      "rules": {
+            "no-unused-vars": ["error", { "args": "none" }],
+            "semi": ["error", "always"],
+            "no-useless-escape": "error"
+        }
+    }
+}

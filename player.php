@@ -12,8 +12,6 @@
 
     $info = json_decode(getSummonerInfo($player));
     $profileIcon = getProfileIconUrl($info->profileiconId);
-
-
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +36,7 @@
 	<title>Sbornes | LoL</title>
 </head>
 <body>
-  
+
   <nav class="navbar navbar-expand-md bg-mydark">
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
