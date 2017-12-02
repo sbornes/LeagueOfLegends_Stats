@@ -33,7 +33,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-md bg-dark">
+<nav class="navbar navbar-expand-md bg-mydark">
   <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -66,14 +66,14 @@
 
 	<section id="Info">
 		<div class="container">
-			<div class="mt-5 p-4 bg-dark player-row row">
+			<div class="mt-5 p-4 bg-mydark player-row row">
 				<div class="player-icon">
 					<img class="rounded-circle" src="<?php echo $profileIcon; ?>">
 					<div class="platinum-border"> </div>
 					<div class="player-level bg-dark border border-primary rounded p-2 px-4"> <?php echo $info->summonerLevel; ?> </div>
 				</div>
 
-				<div class="player-name">
+				<div class="player-name pl-5">
 					<?php echo $info->name; ?>
 				</div>
 

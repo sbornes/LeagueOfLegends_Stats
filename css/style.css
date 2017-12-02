@@ -4,7 +4,12 @@ html, body {
 }
 
 body {
-	background-color: rgb(64, 64, 64);
+	background-color: #26292E;
+  color: rgb(240, 237, 242);
+}
+
+.bg-mydark {
+  background-color: #151A21;
 }
 
 .player-icon {
