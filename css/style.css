@@ -1,0 +1,104 @@
+html, body {
+  font-family: 'Roboto', sans-serif;
+  height:100%;
+}
+
+body {
+	background-color: rgb(64, 64, 64);
+}
+
+.player-row {
+
+}
+
+.player-icon {
+  width: 160px;
+  position: relative;
+}
+
+.player-icon img {
+  height: auto;
+  width: 100%;
+}
+
+.player-level {
+  color: #fff;
+  left: 53px;
+  position: absolute;
+  top: 183px;
+}
+
+.player-name {
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.challenger-border {
+  background-image: url("../assets/borders/challenger.png");
+  height: 256px;
+  left: -35px;
+  position: absolute;
+  top: -80px;
+  width: 256px;
+}
+
+.master-border {
+  background-image: url("../assets/borders/master.png");
+  height: 256px;
+  left: -35px;
+  position: absolute;
+  top: -80px;
+  width: 256px;
+}
+
+.diamond-border {
+  background-image: url("../assets/borders/diamond_b2.png");
+  height: 256px;
+  left: -35px;
+  position: absolute;
+  top: -80px;
+  width: 256px;
+}
+
+.platinum-border {
+  background-image: url(../assets/borders/platinum.png);
+  height: 256px;
+  left: -35px;
+  position: absolute;
+  top: -80px;
+  width: 256px;
+}
+
+.gold-border {
+  background-image: url(../assets/borders/gold.png);
+  background-repeat: no-repeat;
+  height: 256px;
+  left: -24px;
+  position: absolute;
+  top: -15px;
+  transform: scale(1.09,1.09);
+  width: 256px;
+}
+
+.silver-border {
+  background-image: url(../assets/borders/silver.png);
+  background-repeat: no-repeat;
+  height: 256px;
+  left: -22px;
+  position: absolute;
+  top: -25px;
+  transform: scale(1.09,1.09);
+  width: 256px;
+}
+
+.unranked-border {
+  background-image: url(../assets/borders/unranked.png);
+  background-repeat: no-repeat;
+  height: 256px;
+  left: -22px;
+  position: absolute;
+  top: -25px;
+  transform: scale(1.09,1.09);
+  width: 256px;
+}
