@@ -4,9 +4,11 @@
 
 	$player = $_GET['player_name'];
 
-	if(!isset($player) || !validatePlayer($player)){
+	if(!isset($player)){
 	    header('Location:index.php');
 	}
+
+	retrieveDataSummoner($player);
 
 	$info = json_decode(getSummonerInfo($player));
 	$profileIcon = getProfileIconUrl($info->profileiconId);
@@ -66,7 +68,7 @@
 
 	<section id="Info">
 		<div class="container">
-			<div class="mt-5 p-4 bg-mydark player-row row">
+			<div class="mt-5 p-5 bg-mydark player-row row">
 				<div class="player-icon">
 					<img class="rounded-circle" src="<?php echo $profileIcon; ?>">
 					<div class="platinum-border"> </div>
