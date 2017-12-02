@@ -38,54 +38,49 @@
 	<title>Sbornes | LoL</title>
 </head>
 <body>
-
-<nav class="navbar navbar-expand-md bg-mydark">
-  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <a class="navbar-brand" href="/league_website">
-		<img src="assets/icon.png" width="30" height="30" class="d-inline-block align-top" alt="">
-	</a>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <!-- <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
-      </li> -->
-    </ul>
-    <div class="my-2 my-lg-0">
-			<div class="input-group ">
-					<input id="username" type="text" class="form-control" placeholder="Summoner...">
-					<span class="input-group-btn">
-						<button id="search-btn" class="btn btn-primary" type="button" onclick="userValid()"><i class="fa fa-search" aria-hidden="true"></i></button>
-					</span>
-				</div>
+  
+  <nav class="navbar navbar-expand-md bg-mydark">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="/league_website">
+  		<img src="assets/icon.png" width="30" height="30" class="d-inline-block align-top" alt="">
+  	</a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <!-- <li class="nav-item active">
+          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Disabled</a>
+        </li> -->
+      </ul>
+      <div class="my-2 my-lg-0">
+  			<div class="input-group ">
+  					<input id="username" type="text" class="form-control" placeholder="Summoner...">
+  					<span class="input-group-btn">
+  						<button id="search-btn" class="btn btn-primary" type="button" onclick="userValid()"><i class="fa fa-search" aria-hidden="true"></i></button>
+  					</span>
+  				</div>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
-	<section id="Info">
-		<div class="container">
-			<div class="mt-5 p-5 bg-mydark player-row row">
-				<div class="player-icon">
-					<img class="rounded-circle" src="<?php echo $profileIcon; ?>">
-					<div class="platinum-border"> </div>
-					<div class="player-level bg-dark border border-primary rounded p-2 px-4"> <?php echo $info->summonerLevel; ?> </div>
-				</div>
+  <section id="Info">
+  	<div class="container">
+  		<div class="mt-5 p-5 bg-mydark player-row row">
+  			<div class="player-icon">
+  				<img class="rounded-circle" src="<?php echo $profileIcon; ?>">
+  				<div class="platinum-border"> </div>
+  				<div class="player-level bg-dark border border-primary rounded p-2 px-4"> <?php echo $info->summonerLevel; ?> </div>
+  			</div>
+  			<div class="player-name pl-5"> <?php echo $info->name; ?>	</div>
+  		</div>
+  	</div>
+  </section>
 
-				<div class="player-name pl-5">
-					<?php echo $info->name; ?>
-				</div>
-
-			</div>
-		</div>
-
-	</section>
 </body>
 </html>
