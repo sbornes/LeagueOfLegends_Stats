@@ -22,11 +22,15 @@
 		), JSON_FORCE_OBJECT);
 		}
 
-		echo ' we failed';
 		return null;
 	}
 
-	function validatePlayer($summoner_name) {
+	function retrieveDataSummoner($summoner_name) {
+		updateSummoner($summoner_name);
+		updateSummonerRank($summoner_name);
+	}
+
+	function updateSummoner($summoner_name) {
 		include "config.php";
 	  $sql = "SELECT accountId FROM summoners where name='{$summoner_name}';";
 
@@ -45,10 +49,10 @@
 		}
 
 
-		$id 			= $json->id;
-		$accountId 		= $json->accountId;
+		$id 						= $json->id;
+		$accountId 			= $json->accountId;
 		$profileIconId 	= $json->profileIconId;
-		$name 			= $json->name;
+		$name 					= $json->name;
 		$summonerLevel 	= $json->summonerLevel;
 		$revisionDate 	= $json->revisionDate;
 
@@ -56,10 +60,57 @@
 		VALUES ({$id}, {$accountId}, {$profileIconId}, '{$name}', {$summonerLevel}, '{$revisionDate}')
 		ON DUPLICATE KEY UPDATE id={$id}, profileIconId={$profileIconId}, name='{$name}', summonerLevel={$summonerLevel}, revisionDate='{$revisionDate}'";
 
-		if ($conn->query($sql) === TRUE)
+		if ($conn->query($sql) === TRUE) {
 			return true;
+		}
+
 
 		return false;
+	}
+
+	function updateSummonerRank($summoner_name) {
+		include "config.php";
+	  $sql = "SELECT id FROM summoners where name='{$summoner_name}';";
+
+		$result = $conn->query($sql);
+		if ($result->num_rows > 0) {
+			$json = getLeagueByAccount($result->fetch_object()->id);
+		}
+
+		$json_status = (isset($json->status->status_code) ? $json->status->status_code : 0);
+
+		if(isset($json_status) && $json_status == 404) {
+			return false;
+		}
+
+		foreach($json as $value) { //foreach element in $arr
+
+			$table 					= strtolower($value->queueType);
+			$id 						= $value->playerOrTeamId;
+			$name						= $value->playerOrTeamName;
+			$leagueName 		= mysql_real_escape_string($value->leagueName);
+			$wins 					= $value->wins;
+			$losses 				= $value->losses;
+			$tier 					= $value->tier;
+			$rank 					= $value->rank;
+			$leaguePoints 	= $value->leaguePoints;
+			$veteran 				= $value->veteran ? 1 : 0;
+			$inactive 			= $value->inactive ? 1 : 0;
+			$freshBlood 		= $value->freshBlood ? 1 : 0;
+			$leagueId 			= $value->leagueId;
+
+			$sql = "INSERT INTO {$table} (id, name, leagueName, wins, losses, tier, rank, leaguePoints, veteran, inactive, freshBlood, leagueId)
+			VALUES ({$id}, '{$name}', '{$leagueName}', {$wins}, {$losses}, '{$tier}', '{$rank}', {$leaguePoints}, {$veteran}, {$inactive}, {$freshBlood}, '{$leagueId}')
+			ON DUPLICATE KEY UPDATE id={$id}, name='{$name}', leagueName='{$leagueName}', wins={$wins}, losses={$losses}, tier='{$tier}', rank='{$rank}', leaguePoints={$leaguePoints}, veteran={$veteran}, inactive={$inactive}, freshBlood={$freshBlood}, leagueId='{$leagueId}'";
+
+			if($conn->query($sql) == false) {
+				echo "<br><br>Error: " . $sql . "<br><br>" . $conn->error;
+			}
+
+		}
+
+
+		return true;
 	}
 
 	function getSummonerByName($summoner_name) {
@@ -95,6 +146,24 @@
 		$response = curl_exec($ch);
 		curl_close($ch);
 
+		return json_decode($response);
+	}
+
+	function getLeagueByAccount($summoner_id) {
+		include "config.php";
+		$url = "https://oc1.api.riotgames.com/lol/league/v3/positions/by-summoner/" . $summoner_id;
+		// ChromePhp::log($url);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Riot-Token: ' . $api_key, 'Accept: application/json'));
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		$response = curl_exec($ch);
+		curl_close($ch);
+		ChromePhp::log($response);
 		return json_decode($response);
 	}
 
