@@ -1,17 +1,17 @@
 <?php
-	include_once "functions.php";
-	include_once "ChromePhp.php";
+    include_once "functions.php";
+    include_once "ChromePhp.php";
 
-	$player = $_GET['player_name'];
+    $player = $_GET['player_name'];
 
-	if(!isset($player)){
-	    header('Location:index.php');
-	}
+    if (!isset($player)) {
+        header('Location:index.php');
+    }
 
-	retrieveDataSummoner($player);
+    retrieveDataSummoner($player);
 
-	$info = json_decode(getSummonerInfo($player));
-	$profileIcon = getProfileIconUrl($info->profileiconId);
+    $info = json_decode(getSummonerInfo($player));
+    $profileIcon = getProfileIconUrl($info->profileiconId);
 
 
 ?>
@@ -22,12 +22,16 @@
 	<!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
   <!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 	<link rel="stylesheet" href="css/style.css">
-
+	<!-- jQuery first, then Tether, then Bootstrap JS. -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  <!-- Font Awesome. -->
+  <script src="https://use.fontawesome.com/734ab645c0.js"></script>
 	<!-- Javascript -->
   <script src="js/main.js"></script>
 
@@ -55,14 +59,14 @@
         <a class="nav-link disabled" href="#">Disabled</a>
       </li> -->
     </ul>
-    <form class="form-inline my-2 my-lg-0">
+    <div class="my-2 my-lg-0">
 			<div class="input-group ">
 					<input id="username" type="text" class="form-control" placeholder="Summoner...">
 					<span class="input-group-btn">
-						<button class="btn btn-primary" type="button" onclick="userValid()"><i class="fa fa-search" aria-hidden="true"></i></button>
+						<button id="search-btn" class="btn btn-primary" type="button" onclick="userValid()"><i class="fa fa-search" aria-hidden="true"></i></button>
 					</span>
 				</div>
-    </form>
+    </div>
   </div>
 </nav>
 
@@ -83,12 +87,5 @@
 		</div>
 
 	</section>
-
-	<!-- jQuery first, then Tether, then Bootstrap JS. -->
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-    <!-- Font Awesome. -->
-    <script src="https://use.fontawesome.com/734ab645c0.js"></script>
 </body>
 </html>
