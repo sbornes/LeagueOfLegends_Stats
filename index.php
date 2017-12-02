@@ -31,7 +31,7 @@ https://stackoverflow.com/questions/19540032/validation-plugin-is-not-taking-boo
 					<div class="input-group ">
 					  	<input id="username" type="text" class="form-control" placeholder="Summoner...">
 						  <span class="input-group-btn">
-                <button class="btn btn-primary" type="button" onclick="userValid()"><i class="fa fa-search" aria-hidden="true"></i></button>
+                <button id="search-btn" class="btn btn-primary" type="button" onclick="userValid()"><i class="fa fa-search" aria-hidden="true"></i></button>
 				      </span>
 				    </div>
 				</div>

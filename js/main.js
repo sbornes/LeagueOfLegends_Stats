@@ -1,3 +1,13 @@
+$(document).ready(function (){
+
+	$("#username").keyup(function(event){
+	    if(event.keyCode == 13){
+	        $("#search-btn").click();
+	    }
+	});
+
+});
+
 function userValid() {
   var username = document.getElementById('username');
 
