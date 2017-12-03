@@ -11,7 +11,7 @@
     retrieveDataSummoner($player);
 
     $info = json_decode(getSummonerInfo($player));
-    $profileIcon = getProfileIconUrl($info->profileiconId);
+    $profileIcon = getProfileIconUrl($info->summoner->profileiconId);
 ?>
 
 <!DOCTYPE html>
@@ -70,12 +70,27 @@
   <section id="Info">
   	<div class="container">
   		<div class="mt-5 p-5 bg-mydark player-row row">
-  			<div class="player-icon">
-  				<img class="rounded-circle" src="<?php echo $profileIcon; ?>">
-  				<div class="platinum-border"> </div>
-  				<div class="player-level bg-dark border border-primary rounded p-2 px-4"> <?php echo $info->summonerLevel; ?> </div>
-  			</div>
-  			<div class="player-name pl-5"> <?php echo $info->name; ?>	</div>
+        <div class="col-md-6 col-sm-12">
+    			<div class="player-icon d-sm-inline-block mx-auto">
+    				<img class="rounded-circle" src="<?php echo $profileIcon; ?>">
+    				<div class="<?php echo isset($info->rank->solo->tier) ?
+              strtolower($info->rank->solo->tier) : ( isset($info->rank->flex->tier) ?
+              strtolower($info->rank->flex->tier) : 'unranked' ); ?>-border">
+            </div>
+    			</div>
+          <div class="player-level bg-dark border border-primary rounded p-2 px-4"> <?php echo $info->summoner->summonerLevel; ?> </div>
+    			<p class="player-name pl-sm-5 mt-4 mt-sm-0 d-sm-inline-block text-center"> <?php echo $info->summoner->name; ?> </p>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <div class="player-rank float-right">
+            <div class="player-rank-solo">
+              <img class="player-rank-icon" src="assets/tier-icons/<?php echo strtolower($info->rank->solo->tier.'_'.$info->rank->solo->rank); ?>.png">
+            </div>
+            <div class="player-rank-flex">
+              <img class="player-rank-icon" src="assets/tier-icons/<?php echo strtolower($info->rank->flex->tier.'_'.$info->rank->flex->rank); ?>.png">
+            </div>
+          </div>
+        </div>
   		</div>
   	</div>
   </section>
