@@ -3,6 +3,15 @@
 
     function getSummonerInfo($summoner_name)
     {
+        $stats['summoner'] = sqlGetSummoner($summoner_name);
+        $stats['rank']['solo'] = sqlGetRankLeague($stats['summoner']['id'], 'ranked_solo_5x5');
+        $stats['rank']['flex'] = sqlGetRankLeague($stats['summoner']['id'], 'ranked_flex_sr');
+
+        return json_encode($stats);
+    }
+
+    function sqlGetSummoner($summoner_name)
+    {
         include "config.php";
 
         $sql = "SELECT * FROM summoners WHERE name='{$summoner_name}'";
@@ -19,11 +28,45 @@
             $summonerLevel 	= $result->summonerLevel;
             $revisionDate 	= $result->revisionDate;
 
-            return json_encode(array('id' => $id, 'accountId' => $accountId, 'profileiconId' => $profileIconId, 'name' => $name, 'summonerLevel' => $summonerLevel, 'revisionDate' => $revisionDate
-        ), JSON_FORCE_OBJECT);
+            return array('id' => $id, 'accountId' => $accountId,
+        'profileiconId' => $profileIconId, 'name' => $name,
+        'summonerLevel' => $summonerLevel, 'revisionDate' => $revisionDate,
+        JSON_FORCE_OBJECT);
         }
+    }
 
-        return null;
+    function sqlGetRankLeague($summoner_id, $league)
+    {
+        include "config.php";
+
+        $sql = "SELECT * FROM {$league} WHERE id='{$summoner_id}'";
+
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            $result = $result->fetch_object();
+
+            $id 						 = $result->id;
+            $name 					 = $result->name;
+            $leagueName 	   = $result->leagueName;
+            $wins 	         = $result->wins;
+            $losses 	       = $result->losses;
+            $tier 	         = $result->tier;
+            $rank 	         = $result->rank;
+            $leaguePoints 	 = $result->leaguePoints;
+            $veteran 	       = $result->veteran;
+            $inactive 	     = $result->inactive;
+            $freshBlood 	   = $result->freshBlood;
+            $leagueId        = $result->leagueId;
+
+            return array('id' => $id, 'name' => $name,
+        'leagueName' => $leagueName, 'wins' => $wins,
+        'losses' => $losses, 'tier' => $tier,
+        'rank' => $rank, 'leaguePoints' => $leaguePoints,
+        'veteran' => $veteran, 'inactive' => $inactive,
+        'freshBlood' => $freshBlood, 'leagueId' => $leagueId,
+        JSON_FORCE_OBJECT);
+        }
     }
 
     function retrieveDataSummoner($summoner_name)
@@ -65,7 +108,6 @@
         if ($conn->query($sql) === true) {
             return true;
         }
-
 
         return false;
     }
@@ -110,7 +152,6 @@
                 echo "<br><br>Error: " . $sql . "<br><br>" . $conn->error;
             }
         }
-
 
         return true;
     }
