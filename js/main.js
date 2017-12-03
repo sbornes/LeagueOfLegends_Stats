@@ -16,3 +16,11 @@ function userValid () {
     window.location.href = 'player.php?player_name=' + username.value;
   }
 }
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip({
+      animated: 'fade',
+      placement: 'bottom',
+      html: true
+  });
+});

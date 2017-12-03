@@ -69,28 +69,49 @@
 
   <section id="Info">
   	<div class="container">
-  		<div class="mt-5 p-5 bg-mydark player-row row">
-        <div class="col-md-6 col-sm-12">
-    			<div class="player-icon d-sm-inline-block mx-auto">
+  		<div class="mt-5 pt-5 px-3 bg-mydark player-row row">
+        <div class="col-md-12 col-lg-5">
+    			<div class="player-icon d-lg-inline-block mx-auto">
     				<img class="rounded-circle" src="<?php echo $profileIcon; ?>">
     				<div class="<?php echo isset($info->rank->solo->tier) ?
               strtolower($info->rank->solo->tier) : ( isset($info->rank->flex->tier) ?
               strtolower($info->rank->flex->tier) : 'unranked' ); ?>-border">
             </div>
     			</div>
-          <div class="player-level bg-dark border border-primary rounded p-2 px-4"> <?php echo $info->summoner->summonerLevel; ?> </div>
-    			<p class="player-name pl-sm-5 mt-4 mt-sm-0 d-sm-inline-block text-center"> <?php echo $info->summoner->name; ?> </p>
+    			<p class="player-name pl-lg-5 mt-4 mt-lg-0 d-lg-inline-block text-center"> <?php echo $info->summoner->name; ?> <span class="badge badge-primary"><?php echo $info->summoner->summonerLevel; ?></span> </p>
         </div>
-        <div class="col-md-6 col-sm-12">
-          <div class="player-rank float-right">
-            <div class="player-rank-solo">
-              <img class="player-rank-icon" src="assets/tier-icons/<?php echo strtolower($info->rank->solo->tier.'_'.$info->rank->solo->rank); ?>.png">
+        <?php if(isset($info->rank)) : ?>
+        <div class="col-md-12 col-lg-7">
+          <div class="player-rank mx-auto float-lg-right text-center">
+            <?php if(isset($info->rank->solo)) : ?>
+            <div class="player-rank-solo d-md-inline-block mx-lg-auto">
+              <div class="d-sm-inline-block align-top" data-toggle="tooltip" title="<?php echo $info->rank->solo->leagueName; ?> <p><?php echo $info->rank->solo->wins; ?>W <?php echo $info->rank->solo->losses; ?>L <?php echo round(($info->rank->solo->wins/(($info->rank->solo->wins)+($info->rank->solo->losses)))*100);?>%WR</p> ">
+                <img class="player-rank-icon" src="assets/tier-icons/<?php echo strtolower($info->rank->solo->tier.'_'.$info->rank->solo->rank); ?>.png">
+              </div>
+              <div class="player-rank-text d-lg-inline-block">
+                <p class="p-queue">Solo/Duo</p>
+                <p class="p-rank"><?php echo $info->rank->solo->tier . " " . $info->rank->solo->rank ?></p>
+                <p class="p-lp"><p><?php echo $info->rank->solo->leaguePoints . "LP"; ?></p>
+
+              </div>
             </div>
-            <div class="player-rank-flex">
-              <img class="player-rank-icon" src="assets/tier-icons/<?php echo strtolower($info->rank->flex->tier.'_'.$info->rank->flex->rank); ?>.png">
+            <?php endif; ?>
+            <?php if(isset($info->rank->flex)) : ?>
+            <div class="player-rank-flex d-md-inline-block">
+              <div class="d-sm-inline-block align-top" data-toggle="tooltip" title="<?php echo $info->rank->flex->leagueName; ?> <p><?php echo $info->rank->flex->wins; ?>W <?php echo $info->rank->flex->losses; ?>L <?php echo round(($info->rank->flex->wins/(($info->rank->flex->wins)+($info->rank->flex->losses)))*100);?>%WR</p> ">
+                <img class="player-rank-icon" src="assets/tier-icons/<?php echo strtolower($info->rank->flex->tier.'_'.$info->rank->flex->rank); ?>.png">
+              </div>
+              <div class="player-rank-text d-lg-inline-block">
+                <p class="p-queue">Flex 5v5</p>
+                <p class="p-rank"><?php echo $info->rank->flex->tier . " " . $info->rank->flex->rank ?></p>
+                <p class="p-lp"><?php echo $info->rank->flex->leaguePoints . "LP"; ?></p>
+
+              </div>
             </div>
+            <?php endif; ?>
           </div>
         </div>
+      <?php endif; ?>
   		</div>
   	</div>
   </section>

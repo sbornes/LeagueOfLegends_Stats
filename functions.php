@@ -209,7 +209,7 @@
 
         $response = curl_exec($ch);
         curl_close($ch);
-        ChromePhp::log($response);
+        // ChromePhp::log($response);
         return json_decode($response);
     }
 

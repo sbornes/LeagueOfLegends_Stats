@@ -6,12 +6,12 @@ html, body {
 }
 
 body {
-	background-color: #26292E;
+	background-color: #2F3238;
   color: rgb(240, 237, 242);
 }
 
 .bg-mydark {
-  background-color: #151A21;
+  background-color: #26292E;
 }
 
 .player-icon {
@@ -37,8 +37,18 @@ body {
   text-transform: uppercase;
 }
 
+.badge {
+  margin-top: -0.25em;
+  vertical-align: middle;
+  width: 32px;
+}
+
 .player-rank-icon {
   width: 128px;
+}
+
+.player-rank-text > p {
+  margin-bottom: 0px;
 }
 
 .challenger-border {
