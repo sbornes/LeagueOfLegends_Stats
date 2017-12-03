@@ -89,9 +89,9 @@
                 <img class="player-rank-icon" src="assets/tier-icons/<?php echo strtolower($info->rank->solo->tier.'_'.$info->rank->solo->rank); ?>.png">
               </div>
               <div class="player-rank-text d-lg-inline-block">
-                <p class="p-queue">Solo/Duo</p>
-                <p class="p-rank"><?php echo $info->rank->solo->tier . " " . $info->rank->solo->rank ?></p>
-                <p class="p-lp"><p><?php echo $info->rank->solo->leaguePoints . "LP"; ?></p>
+                <p class="p-queue text-muted"><small>SOLO/DUO</small></p>
+                <p class="p-rank lead"><?php echo $info->rank->solo->tier . " " . $info->rank->solo->rank ?></p>
+                <p class="p-lp text-muted"><small><?php echo $info->rank->solo->leaguePoints . "LP"; ?></small></p>
 
               </div>
             </div>
@@ -102,9 +102,9 @@
                 <img class="player-rank-icon" src="assets/tier-icons/<?php echo strtolower($info->rank->flex->tier.'_'.$info->rank->flex->rank); ?>.png">
               </div>
               <div class="player-rank-text d-lg-inline-block">
-                <p class="p-queue">Flex 5v5</p>
-                <p class="p-rank"><?php echo $info->rank->flex->tier . " " . $info->rank->flex->rank ?></p>
-                <p class="p-lp"><?php echo $info->rank->flex->leaguePoints . "LP"; ?></p>
+                <p class="p-queue text-muted"><small>FLEX 5V5</small></p>
+                <p class="p-rank lead"><?php echo $info->rank->flex->tier . " " . $info->rank->flex->rank ?></p>
+                <p class="p-lp text-muted"><small><?php echo $info->rank->flex->leaguePoints . "LP"; ?></small></p>
 
               </div>
             </div>
