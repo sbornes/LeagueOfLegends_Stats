@@ -1,6 +1,8 @@
 html, body {
   font-family: 'Roboto', sans-serif;
   height:100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -14,7 +16,7 @@ body {
 
 .player-icon {
   position: relative;
-  width: 160px;
+  width: 96px;
 }
 
 .player-icon img {
@@ -35,71 +37,83 @@ body {
   text-transform: uppercase;
 }
 
+.player-rank-icon {
+  width: 128px;
+}
+
 .challenger-border {
   background-image: url("../assets/borders/challenger.png");
-  height: 256px;
-  left: -35px;
+  background-repeat: no-repeat;
+  background-size: 150px;
+  height: 310px;
+  left: -27px;
   position: absolute;
-  top: -80px;
+  top: -55px;
   width: 256px;
 }
 
 .master-border {
   background-image: url("../assets/borders/master.png");
-  height: 256px;
-  left: -35px;
+  background-repeat: no-repeat;
+  background-size: 150px;
+  height: 310px;
+  left: -27px;
   position: absolute;
-  top: -80px;
+  top: -55px;
   width: 256px;
 }
 
 .diamond-border {
   background-image: url("../assets/borders/diamond_b2.png");
-  height: 256px;
-  left: -35px;
+  background-repeat: no-repeat;
+  background-size: 150px;
+  height: 310px;
+  left: -27px;
   position: absolute;
-  top: -80px;
+  top: -55px;
   width: 256px;
 }
 
 .platinum-border {
   background-image: url(../assets/borders/platinum.png);
-  height: 256px;
-  left: -35px;
+  background-repeat: no-repeat;
+  background-size: 150px;
+  height: 310px;
+  left: -27px;
   position: absolute;
-  top: -80px;
+  top: -55px;
   width: 256px;
 }
 
 .gold-border {
   background-image: url(../assets/borders/gold.png);
   background-repeat: no-repeat;
-  height: 256px;
-  left: -24px;
+  background-size: 150px;
+  height: 310px;
+  left: -27px;
   position: absolute;
-  top: -15px;
-  transform: scale(1.09,1.09);
+  top: -22px;
   width: 256px;
 }
 
 .silver-border {
   background-image: url(../assets/borders/silver.png);
   background-repeat: no-repeat;
-  height: 256px;
-  left: -22px;
+  background-size: 150px;
+  height: 310px;
+  left: -27px;
   position: absolute;
-  top: -25px;
-  transform: scale(1.09,1.09);
+  top: -29px;
   width: 256px;
 }
 
 .unranked-border {
   background-image: url(../assets/borders/unranked.png);
   background-repeat: no-repeat;
-  height: 256px;
-  left: -22px;
+  background-size: 150px;
+  height: 310px;
+  left: -27px;
   position: absolute;
-  top: -25px;
-  transform: scale(1.09,1.09);
+  top: -29px;
   width: 256px;
 }
