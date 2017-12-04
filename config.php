@@ -1,4 +1,6 @@
 <?php
+	$cache_path = 'cache/';
+	
 	$api_key = "RGAPI-844998e6-ab4b-4f45-b44f-609e8f9bf90f";
 
 	$servername = "localhost";

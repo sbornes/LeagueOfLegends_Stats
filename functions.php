@@ -115,6 +115,7 @@
     function updateSummonerRank($summoner_name)
     {
         include "config.php";
+
         $sql = "SELECT id FROM summoners where name='{$summoner_name}';";
 
         $result = $conn->query($sql);
@@ -159,7 +160,14 @@
     function getSummonerByName($summoner_name)
     {
         include "config.php";
+
         $url = "https://oc1.api.riotgames.com/lol/summoner/v3/summoners/by-name/" . rawurlencode($summoner_name);
+
+        $filename = $cache_path.md5($url);
+        if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
+        {
+            return json_decode(file_get_contents($filename));
+        }
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -172,6 +180,7 @@
         $response = curl_exec($ch);
         curl_close($ch);
 
+        file_put_contents($filename, $response);
         return json_decode($response);
     }
 
@@ -180,6 +189,12 @@
         include "config.php";
         $url = "https://oc1.api.riotgames.com/lol/summoner/v3/summoners/by-account/" . $summoner_id;
 
+        $filename = $cache_path.md5($url);
+        if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
+        {
+            return json_decode(file_get_contents($filename));
+        }
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
@@ -191,6 +206,7 @@
         $response = curl_exec($ch);
         curl_close($ch);
 
+        file_put_contents($filename, $response);
         return json_decode($response);
     }
 
@@ -198,7 +214,13 @@
     {
         include "config.php";
         $url = "https://oc1.api.riotgames.com/lol/league/v3/positions/by-summoner/" . $summoner_id;
-        // ChromePhp::log($url);
+
+        $filename = $cache_path.md5($url);
+        if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
+        {
+            return json_decode(file_get_contents($filename));
+        }
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
@@ -209,7 +231,9 @@
 
         $response = curl_exec($ch);
         curl_close($ch);
-        // ChromePhp::log($response);
+
+        file_put_contents($filename, $response);
+
         return json_decode($response);
     }
 
@@ -217,7 +241,13 @@
     {
       include "config.php";
       $url = "https://oc1.api.riotgames.com/lol/match/v3/matchlists/by-account/" . $summoner_id . "/recent";
-      // ChromePhp::log($url);
+
+      $filename = $cache_path.md5($url);
+      if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
+      {
+          return json_decode(file_get_contents($filename));
+      }
+
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL, $url);
       curl_setopt($ch, CURLINFO_HEADER_OUT, true);
@@ -228,7 +258,9 @@
 
       $response = curl_exec($ch);
       curl_close($ch);
-      // ChromePhp::log($response);
+
+      file_put_contents($filename, $response);
+
       return json_decode($response);
     }
 
@@ -240,19 +272,26 @@
       {
         include "config.php";
         $url = "https://oc1.api.riotgames.com/lol/match/v3/matches/" . $value->gameId;
-        //ChromePhp::log($url);
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Riot-Token: ' . $api_key, 'Accept: application/json'));
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        $response = curl_exec($ch);
-        curl_close($ch);
-        // ChromePhp::log($response);
-        $data[] = json_decode($response);
+        $filename = $cache_path.md5($url);
+        if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
+        {
+            $data[] = json_decode(file_get_contents($filename));
+        }
+        else {
+          $ch = curl_init();
+          curl_setopt($ch, CURLOPT_URL, $url);
+          curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+          curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Riot-Token: ' . $api_key, 'Accept: application/json'));
+          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+          $response = curl_exec($ch);
+          curl_close($ch);
+          file_put_contents($filename, $response);
+          $data[] = json_decode($response);
+        }
       }
 
       return $data;
