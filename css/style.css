@@ -24,6 +24,13 @@ body {
   width: 100%;
 }
 
+.player-icon:before {    /* create a full-height inline block pseudo=element */
+    content: ' ';
+    display: inline-block;
+    vertical-align: middle;  /* vertical alignment of the inline element */
+    height: 100%;
+}
+
 .player-level {
   color: #fff;
   left: 53px;
@@ -34,13 +41,18 @@ body {
 .player-name {
   font-size: 18px;
   font-weight: bold;
+  position: relative;
   text-transform: uppercase;
+}
+
+.player-region {
+  position: absolute;
+  top: 16px;
 }
 
 .badge {
   margin-top: -0.25em;
   vertical-align: middle;
-  width: 32px;
 }
 
 .player-rank-icon {
@@ -48,7 +60,7 @@ body {
 }
 
 .player-rank-text > p {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .challenger-border {
@@ -58,7 +70,7 @@ body {
   height: 310px;
   left: -27px;
   position: absolute;
-  top: -55px;
+  top: -31px;
   width: 256px;
 }
 
@@ -69,7 +81,7 @@ body {
   height: 310px;
   left: -27px;
   position: absolute;
-  top: -55px;
+  top: -31px;
   width: 256px;
 }
 
@@ -80,7 +92,7 @@ body {
   height: 310px;
   left: -27px;
   position: absolute;
-  top: -55px;
+  top: -31px;
   width: 256px;
 }
 
@@ -91,39 +103,50 @@ body {
   height: 310px;
   left: -27px;
   position: absolute;
-  top: -55px;
+  top: -31px;
   width: 256px;
 }
 
 .gold-border {
   background-image: url(../assets/borders/gold.png);
   background-repeat: no-repeat;
-  background-size: 150px;
+  background-size: 146px;
   height: 310px;
-  left: -27px;
+  left: -26px;
   position: absolute;
-  top: -22px;
+  top: 4px;
   width: 256px;
 }
 
 .silver-border {
   background-image: url(../assets/borders/silver.png);
   background-repeat: no-repeat;
-  background-size: 150px;
+  background-size: 140px;
   height: 310px;
-  left: -27px;
+  left: -21px;
   position: absolute;
-  top: -29px;
+  top: 0;
+  width: 256px;
+}
+
+.bronze-border {
+  background-image: url(../assets/borders/bronze.png);
+  background-repeat: no-repeat;
+  background-size: 140px;
+  height: 310px;
+  left: -21px;
+  position: absolute;
+  top: 0;
   width: 256px;
 }
 
 .unranked-border {
   background-image: url(../assets/borders/unranked.png);
   background-repeat: no-repeat;
-  background-size: 150px;
+  background-size: 140px;
   height: 310px;
-  left: -27px;
+  left: -21px;
   position: absolute;
-  top: -29px;
+  top: 0;
   width: 256px;
 }
