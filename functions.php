@@ -213,6 +213,51 @@
         return json_decode($response);
     }
 
+    function getMatchRecentByAccount($summoner_id)
+    {
+      include "config.php";
+      $url = "https://oc1.api.riotgames.com/lol/match/v3/matchlists/by-account/" . $summoner_id . "/recent";
+      // ChromePhp::log($url);
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Riot-Token: ' . $api_key, 'Accept: application/json'));
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+      $response = curl_exec($ch);
+      curl_close($ch);
+      // ChromePhp::log($response);
+      return json_decode($response);
+    }
+
+    function getMatchRecentData($json)
+    {
+      $data = [];
+
+      foreach($json->matches as $value)
+      {
+        include "config.php";
+        $url = "https://oc1.api.riotgames.com/lol/match/v3/matches/" . $value->gameId;
+        //ChromePhp::log($url);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Riot-Token: ' . $api_key, 'Accept: application/json'));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        // ChromePhp::log($response);
+        $data[] = json_decode($response);
+      }
+
+      return $data;
+    }
+
     function getLatestVersion()
     {
         include "config.php";

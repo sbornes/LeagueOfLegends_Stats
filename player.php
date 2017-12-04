@@ -1,4 +1,6 @@
 <?php
+    ini_set('max_execution_time', 300);
+
     include_once "functions.php";
     include_once "ChromePhp.php";
 
@@ -12,6 +14,10 @@
 
     $info = json_decode(getSummonerInfo($player));
     $profileIcon = getProfileIconUrl($info->summoner->profileiconId);
+    $recentMatch = getMatchRecentByAccount($info->summoner->accountId);
+    $recentMatchData = getMatchRecentData($recentMatch);
+
+    //ChromePhp::log($recentMatch);
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +27,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <!-- FontAwesome Glyphicon -->
-  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+  <!-- <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
   <!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -101,7 +107,6 @@
                 <p class="p-queue text-muted"><small>SOLO/DUO</small></p>
                 <p class="p-rank lead"><?php echo $info->rank->solo->tier . " " . $info->rank->solo->rank ?></p>
                 <p class="p-lp text-muted"><small><?php echo $info->rank->solo->leaguePoints . "LP"; ?></small></p>
-
               </div>
             </div>
             <?php endif; ?>
@@ -114,7 +119,6 @@
                 <p class="p-queue text-muted"><small>FLEX 5V5</small></p>
                 <p class="p-rank lead"><?php echo $info->rank->flex->tier . " " . $info->rank->flex->rank ?></p>
                 <p class="p-lp text-muted"><small><?php echo $info->rank->flex->leaguePoints . "LP"; ?></small></p>
-
               </div>
             </div>
             <?php endif; ?>
@@ -123,6 +127,23 @@
       <?php endif; ?>
   		</div>
   	</div>
+  </section>
+
+  <section id="match-history">
+    <div class="container mt-5">
+      <ul class="list-group">
+        <?php foreach ($recentMatch->matches as $index => $value) : ?>
+        <li id="match-<?php echo $index ?>" class="list-group-item" data-summoner-id="<?php echo $info->summoner->accountId ?>" data-game-id="<?php echo $recentMatchData[$index]->gameId ?>">
+          <?php foreach ($recentMatchData[$index]->participantIdentities as $players) : ?>
+            <?php echo $players->player->summonerName ?>
+          <?php endforeach ?>
+
+
+          <br>
+        </li>
+        <?php endforeach ?>
+      </ul>
+    </div>
   </section>
 
 </body>
