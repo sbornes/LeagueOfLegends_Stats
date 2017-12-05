@@ -1,0 +1,1 @@
+{"image":{"full":"SummonerSmite.png","sprite":"spell0.png","group":"spell","x":192,"y":48,"w":48,"h":48},"name":"Smite","description":"Deals 390-1000 true damage (depending on champion level) to target epic, large, or medium monster or enemy minion. Restores Health based on your maximum life when used against monsters.","id":11,"summonerLevel":9,"key":"SummonerSmite"}
