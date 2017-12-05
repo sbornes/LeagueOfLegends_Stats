@@ -4,6 +4,7 @@
     $cache_summoner = 'summoner/';
     $cache_champion = 'champion/';
     $cache_champion_icon = 'champion_icon/';
+    $cache_champion_mastery = 'champion_mastery/';
     $cache_league = 'league/';
     $cache_match_history = 'match_history/';
     $cache_match_history_data = 'match_history_data/';
@@ -29,6 +30,10 @@
       mkdir($cache_path.$cache_champion_icon, 0777, true);
     }
 
+    if (!file_exists($cache_path.$cache_champion_mastery)) {
+      mkdir($cache_path.$cache_champion_mastery, 0777, true);
+    }
+
     if (!file_exists($cache_path.$cache_league)) {
       mkdir($cache_path.$cache_league, 0777, true);
     }
@@ -47,11 +52,15 @@
 
     function getSummonerInfo($summoner_name)
     {
-        $stats['summoner'] = sqlGetSummoner($summoner_name);
-        $stats['rank']['solo'] = sqlGetRankLeague($stats['summoner']['id'], 'ranked_solo_5x5');
-        $stats['rank']['flex'] = sqlGetRankLeague($stats['summoner']['id'], 'ranked_flex_sr');
 
-        return json_encode($stats);
+        $stats['summoner'] = getSummonerByName($summoner_name);
+
+        $rank = getLeagueByAccount($stats['summoner']->id);
+
+        $stats['rank']['solo'] = $rank[0];
+        $stats['rank']['flex'] = $rank[1];
+
+        return json_encode($stats, JSON_FORCE_OBJECT);
     }
 
     function sqlGetSummoner($summoner_name)
@@ -115,8 +124,12 @@
 
     function retrieveDataSummoner($summoner_name)
     {
-        updateSummoner($summoner_name);
-        updateSummonerRank($summoner_name);
+        //updateSummoner($summoner_name);
+        //updateSummonerRank($summoner_name);
+
+        // $player = getSummonerByName($summoner_name);
+        //
+        // getLeagueByAccount($player->id);
     }
 
     function updateSummoner($summoner_name)
@@ -436,6 +449,37 @@
       $url = "https://oc1.api.riotgames.com/lol/static-data/v3/summoner-spells/" . $spell_id . "?locale=en_US&tags=image";
       https://oc1.api.riotgames.com/lol/static-data/v3/summoner-spells/11?locale=en_US&tags=image
       $filename = $cache_path.$cache_summoner_spell.md5($url);
+      if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
+      {
+          return json_decode(file_get_contents($filename));
+      }
+
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Riot-Token: ' . $api_key, 'Accept: application/json'));
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+      $response = curl_exec($ch);
+      curl_close($ch);
+
+      file_put_contents($filename, $response);
+
+      return json_decode($response);
+    }
+
+    function getChampionMastery($summoner_id)
+    {
+      include "config.php";
+
+      global $cache_path;
+      global $cache_champion_mastery;
+
+      $url = "https://oc1.api.riotgames.com/lol/champion-mastery/v3/champion-masteries/by-summoner/" . $summoner_id;
+      https://oc1.api.riotgames.com/lol/static-data/v3/summoner-spells/11?locale=en_US&tags=image
+      $filename = $cache_path.$cache_champion_mastery.md5($url);
       if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
       {
           return json_decode(file_get_contents($filename));

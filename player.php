@@ -14,7 +14,7 @@
     retrieveDataSummoner($player);
 
     $info = json_decode(getSummonerInfo($player));
-    $profileIcon = getProfileIconUrl($info->summoner->profileiconId);
+    $profileIcon = getProfileIconUrl($info->summoner->profileIconId);
     $recentMatch = getMatchRecentByAccount($info->summoner->accountId);
     $recentMatchData = getMatchRecentData($recentMatch);
 
@@ -153,8 +153,8 @@
               </div>
 
               <?php $championInfo = getChampionById($players->championId); ?>
-              <?php //$summonerSpellInfo1 = getSummonerSpell($players->spell1Id); ?>
-              <?php //$summonerSpellInfo2 = getSummonerSpell($players->spell2Id); ?>
+              <?php $summonerSpellInfo1 = getSummonerSpell($players->spell1Id); ?>
+              <?php $summonerSpellInfo2 = getSummonerSpell($players->spell2Id); ?>
 
 
 
@@ -163,14 +163,14 @@
                 <img class="match-history-summoner-icon rounded-circle" src="<?php //echo getSummonerSpellIcon($summonerSpellInfo1->image->full); ?>" data-summoner-spell-id="<?php //$summonerSpellInfo1->id; ?>" data-toggle="tooltip" title="<?php //echo $summonerSpellInfo1->name; ?><p class='m-0'><?php //echo $summonerSpellInfo1->description;?></p>">
 
                 <div class="stat-summoner-spell d-inline-block align-middle">
-                  <div class="match-history-summoner-icon mb-2">
-                    <img class="rounded-circle" src="assets/SummonerFlash.png">
-                    <img class="rounded-circle" src="assets/SummonerFlash.png">
+                  <div class="match-history-summoner-icon d-inline-block">
+                    <img class="rounded-circle d-block mb-2" src="<?php echo getSummonerSpellIcon($summonerSpellInfo1->image->full); ?>" data-summoner-spell-id="<?php echo $summonerSpellInfo1->id; ?>" data-toggle="tooltip" title="<?php echo $summonerSpellInfo1->name; ?><p class='m-0'><?php echo $summonerSpellInfo1->description;?></p>">
+                    <img class="rounded-circle d-block" src="<?php echo getSummonerSpellIcon($summonerSpellInfo2->image->full); ?>" data-summoner-spell-id="<?php echo $summonerSpellInfo2->id; ?>" data-toggle="tooltip" title="<?php echo $summonerSpellInfo2->name; ?><p class='m-0'><?php echo $summonerSpellInfo2->description;?></p>">
                   </div>
 
-                  <div class="match-history-rune-icon">
-                    <img class="rounded-circle" src="assets/SummonerFlash.png">
-                    <img class="rounded-circle" src="assets/SummonerFlash.png">
+                  <div class="match-history-rune-icon d-inline-block">
+                    <img class="rounded-circle d-block mb-2" src="assets/perkStyle/<?php echo $players->stats->perkPrimaryStyle; ?>.png">
+                    <img class="rounded-circle d-block" src="assets/perkStyle/<?php echo $players->stats->perkSubStyle; ?>.png">
                   </div>
                 </div>
               </div>
