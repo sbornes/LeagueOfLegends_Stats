@@ -1,6 +1,50 @@
 <?php
     include "ChromePhp.php";
 
+    $cache_summoner = 'summoner/';
+    $cache_champion = 'champion/';
+    $cache_champion_icon = 'champion_icon/';
+    $cache_league = 'league/';
+    $cache_match_history = 'match_history/';
+    $cache_match_history_data = 'match_history_data/';
+    $cache_summoner_spell = 'summoner_spell/';
+
+    $cache_path = 'cache/';
+    $version = getLatestVersion();
+    $cache_path = $cache_path.$version.'/';
+
+    if (!file_exists($cache_path)) {
+      mkdir($cache_path, 0777, true);
+    }
+
+    if (!file_exists($cache_path.$cache_summoner)) {
+      mkdir($cache_path.$cache_summoner, 0777, true);
+    }
+
+    if (!file_exists($cache_path.$cache_champion)) {
+      mkdir($cache_path.$cache_champion, 0777, true);
+    }
+
+    if (!file_exists($cache_path.$cache_champion_icon)) {
+      mkdir($cache_path.$cache_champion_icon, 0777, true);
+    }
+
+    if (!file_exists($cache_path.$cache_league)) {
+      mkdir($cache_path.$cache_league, 0777, true);
+    }
+
+    if (!file_exists($cache_path.$cache_match_history)) {
+      mkdir($cache_path.$cache_match_history, 0777, true);
+    }
+
+    if (!file_exists($cache_path.$cache_match_history_data)) {
+      mkdir($cache_path.$cache_match_history_data, 0777, true);
+    }
+
+    if (!file_exists($cache_path.$cache_summoner_spell)) {
+      mkdir($cache_path.$cache_summoner_spell, 0777, true);
+    }
+
     function getSummonerInfo($summoner_name)
     {
         $stats['summoner'] = sqlGetSummoner($summoner_name);
@@ -161,9 +205,12 @@
     {
         include "config.php";
 
+        global $cache_path;
+        global $cache_summoner;
+
         $url = "https://oc1.api.riotgames.com/lol/summoner/v3/summoners/by-name/" . rawurlencode($summoner_name);
 
-        $filename = $cache_path.md5($url);
+        $filename = $cache_path.$cache_summoner.md5($url);
         if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
         {
             return json_decode(file_get_contents($filename));
@@ -187,9 +234,13 @@
     function getSummonerByAccount($summoner_id)
     {
         include "config.php";
+
+        global $cache_path;
+        global $cache_summoner;
+
         $url = "https://oc1.api.riotgames.com/lol/summoner/v3/summoners/by-account/" . $summoner_id;
 
-        $filename = $cache_path.md5($url);
+        $filename = $cache_path.$cache_summoner.md5($url);
         if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
         {
             return json_decode(file_get_contents($filename));
@@ -213,9 +264,13 @@
     function getLeagueByAccount($summoner_id)
     {
         include "config.php";
+
+        global $cache_path;
+        global $cache_league;
+
         $url = "https://oc1.api.riotgames.com/lol/league/v3/positions/by-summoner/" . $summoner_id;
 
-        $filename = $cache_path.md5($url);
+        $filename = $cache_path.$cache_league.md5($url);
         if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
         {
             return json_decode(file_get_contents($filename));
@@ -240,9 +295,13 @@
     function getMatchRecentByAccount($summoner_id)
     {
       include "config.php";
+
+      global $cache_path;
+      global $cache_match_history;
+
       $url = "https://oc1.api.riotgames.com/lol/match/v3/matchlists/by-account/" . $summoner_id . "/recent";
 
-      $filename = $cache_path.md5($url);
+      $filename = $cache_path.$cache_match_history.md5($url);
       if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
       {
           return json_decode(file_get_contents($filename));
@@ -271,9 +330,13 @@
       foreach($json->matches as $value)
       {
         include "config.php";
+
+        global $cache_path;
+        global $cache_match_history_data;
+
         $url = "https://oc1.api.riotgames.com/lol/match/v3/matches/" . $value->gameId;
 
-        $filename = $cache_path.md5($url);
+        $filename = $cache_path.$cache_match_history_data.md5($url);
         if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
         {
             $data[] = json_decode(file_get_contents($filename));
@@ -297,10 +360,54 @@
       return $data;
     }
 
+    function getChampionById($champion_id)
+    {
+      include "config.php";
+
+      global $cache_path;
+      global $cache_champion;
+
+      $url = "https://oc1.api.riotgames.com/lol/static-data/v3/champions/" . $champion_id . "?locale=en_US&tags=image";
+
+      $filename = $cache_path.$cache_champion.md5($url);
+      if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
+      {
+          return json_decode(file_get_contents($filename));
+      }
+
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Riot-Token: ' . $api_key, 'Accept: application/json'));
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+      $response = curl_exec($ch);
+      curl_close($ch);
+
+      file_put_contents($filename, $response);
+
+      return json_decode($response);
+    }
+
     function getLatestVersion()
     {
         include "config.php";
+
+        global $cache_path;
+
         $url = "https://oc1.api.riotgames.com/lol/static-data/v3/versions";
+
+        $filename = $cache_path.md5($url);
+
+        ChromePhp::log($filename);
+
+        if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
+        {
+            $response = json_decode(file_get_contents($filename), true);
+            return isset($response[0]) ? $response[0] : $league_version;
+        }
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -313,11 +420,116 @@
         $response = curl_exec($ch);
         curl_close($ch);
 
+        file_put_contents($filename, $response);
+
         $response = json_decode($response, true);
         return isset($response[0]) ? $response[0] : $league_version;
     }
 
+    function getSummonerSpell($spell_id)
+    {
+      include "config.php";
+
+      global $cache_path;
+      global $cache_summoner_spell;
+
+      $url = "https://oc1.api.riotgames.com/lol/static-data/v3/summoner-spells/" . $spell_id . "?locale=en_US&tags=image";
+      https://oc1.api.riotgames.com/lol/static-data/v3/summoner-spells/11?locale=en_US&tags=image
+      $filename = $cache_path.$cache_summoner_spell.md5($url);
+      if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
+      {
+          return json_decode(file_get_contents($filename));
+      }
+
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Riot-Token: ' . $api_key, 'Accept: application/json'));
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+      $response = curl_exec($ch);
+      curl_close($ch);
+
+      file_put_contents($filename, $response);
+
+      return json_decode($response);
+    }
+
     function getProfileIconUrl($icon_num)
     {
-        return "http://ddragon.leagueoflegends.com/cdn/".getLatestVersion()."/img/profileicon/{$icon_num}.png";
+        global $version;
+        return "http://ddragon.leagueoflegends.com/cdn/".$version."/img/profileicon/{$icon_num}.png";
+    }
+
+    function getChampionIconUrl($champion_name)
+    {
+        global $version;
+        global $cache_path;
+        global $cache_champion_icon;
+
+        $url = "http://ddragon.leagueoflegends.com/cdn/".$version."/img/champion/".str_replace(' ','',$champion_name);
+
+        $ext = pathinfo($url, PATHINFO_EXTENSION);
+
+        $filename = $cache_path.$cache_champion_icon.md5($url).'.'.$ext;
+        if( file_exists($filename) )
+        {
+            return $filename;
+        }
+
+        file_put_contents($filename, file_get_contents($url));
+
+        return $url;
+    }
+
+    function getSummonerSpellIcon($summoner_spell)
+    {
+        global $version;
+        return "http://ddragon.leagueoflegends.com/cdn/".$version."/img/spell/".str_replace(' ','',$summoner_spell);
+    }
+
+    function secondsToMinutes($t_seconds)
+    {
+        $minutes = floor($t_seconds / 60);
+        $seconds = $t_seconds % 60;
+
+        if ($minutes > 0) {
+            echo "{$minutes}m ";
+        }
+
+        if ($seconds > 0) {
+            echo "{$seconds}s ";
+        }
+    }
+
+    function lastPlayed($epoch)
+    {
+      $dt_lastplayed = new DateTime(date("Y-m-d H:i:s", substr($epoch, 0, 10)));
+      $dt_now = new DateTime(date("Y-m-d H:i:s", time()));
+
+      $last_played = $dt_lastplayed->diff($dt_now);
+
+      if($last_played -> y > 0)
+        return $last_played->format('%y ' . ($last_played->y == 1 ? 'year' : 'years') .' ago');
+      if($last_played -> m > 0)
+        return $last_played->format('%m ' . ($last_played->m == 1 ? 'minute' : 'minutes') .' ago');
+      if($last_played -> d > 0)
+        return $last_played->format('%d ' . ($last_played->d == 1 ? 'day' : 'days') .' ago');
+      if($last_played -> h > 0)
+        return $last_played->format('%h ' . ($last_played->h == 1 ? 'hour' : 'hours') .' ago');
+      if($last_played -> i > 0)
+        return $last_played->format('%i ' . ($last_played->i == 1 ? 'minute' : 'minutes') .' ago');
+      if($last_played -> s > 0)
+        return $last_played->format('less than a minute ago');
+      //$last_played = date_diff($dt_now, $dt_lastplayed);
+      //echo date_diff($dt_now, $dt_lastplayed);
+      //echo $last_played->format('%R%a days');
+    }
+
+    function getKDA($kills, $deaths, $assists)
+    {
+
+      return $deaths ? number_format(($kills+$assists)/($deaths), 2, '.', '') . ' KDA ' : 'Perfect';
     }

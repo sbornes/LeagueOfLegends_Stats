@@ -1,6 +1,7 @@
 <?php
     ini_set('max_execution_time', 300);
 
+    include_once "config.php";
     include_once "functions.php";
     include_once "ChromePhp.php";
 
@@ -131,13 +132,58 @@
 
   <section id="match-history">
     <div class="container mt-5">
-      <ul class="list-group">
+      <ul id="match-history" class="list-group">
         <?php foreach ($recentMatch->matches as $index => $value) : ?>
-        <li id="match-<?php echo $index ?>" class="list-group-item" data-summoner-id="<?php echo $info->summoner->accountId ?>" data-game-id="<?php echo $recentMatchData[$index]->gameId ?>">
+        <li id="match-<?php echo $index ?>" class="list-group-item mb-2" data-summoner-id="<?php echo $info->summoner->id ?>" data-game-id="<?php echo $recentMatchData[$index]->gameId ?>">
           <?php foreach ($recentMatchData[$index]->participantIdentities as $players) : ?>
-            <?php echo $players->player->summonerName ?>
+            <?php if($players->player->summonerId == $info->summoner->id) { $GLOBALS['pId'] = $players->participantId; } ?>
+            <!-- <?php echo $players->participantId . ' ' . $players->player->summonerName . '<br>'; ?> -->
           <?php endforeach ?>
 
+          <?php foreach ($recentMatchData[$index]->participants as $players) : ?>
+            <?php if($players->stats->participantId == $pId) : ?>
+
+              <div id="hidden-win" class="d-none"><?php echo $players->stats->win; ?></div>
+              <div class="game-info d-inline-block align-middle small text-center">
+                <p class="mb-0 ellipsis font-weight-bold"><?php echo $gamemodes_const[$recentMatchData[$index]->queueId] ?></p>
+                <p class="mb-0 ellipsis text-muted"><?php echo lastPlayed($recentMatchData[$index]->gameCreation) ?></p>
+                <hr/>
+                <p class="mb-0 ellipsis font-weight-bold text-uppercase"><?php echo ($players->stats->win ? "Victory" : "Defeat"); ?></p>
+                <p class="mb-0 ellipsis"><?php echo secondsToMinutes($recentMatchData[$index]->gameDuration); ?></p>
+              </div>
+
+              <?php $championInfo = getChampionById($players->championId); ?>
+              <?php //$summonerSpellInfo1 = getSummonerSpell($players->spell1Id); ?>
+              <?php //$summonerSpellInfo2 = getSummonerSpell($players->spell2Id); ?>
+
+
+
+              <div class="stat-info-1 d-inline-block align-middle">
+                <img class="match-history-champion-icon rounded-circle" src="<?php echo getChampionIconUrl($championInfo->image->full); ?>" data-champion-id="<?php $championInfo->id; ?>" data-toggle="tooltip" title="<?php echo $championInfo->name; ?><p class='m-0'><?php echo $championInfo->title;?></p>">
+                <img class="match-history-summoner-icon rounded-circle" src="<?php //echo getSummonerSpellIcon($summonerSpellInfo1->image->full); ?>" data-summoner-spell-id="<?php //$summonerSpellInfo1->id; ?>" data-toggle="tooltip" title="<?php //echo $summonerSpellInfo1->name; ?><p class='m-0'><?php //echo $summonerSpellInfo1->description;?></p>">
+
+                <div class="stat-summoner-spell d-inline-block align-middle">
+                  <div class="match-history-summoner-icon mb-2">
+                    <img class="rounded-circle" src="assets/SummonerFlash.png">
+                    <img class="rounded-circle" src="assets/SummonerFlash.png">
+                  </div>
+
+                  <div class="match-history-rune-icon">
+                    <img class="rounded-circle" src="assets/SummonerFlash.png">
+                    <img class="rounded-circle" src="assets/SummonerFlash.png">
+                  </div>
+                </div>
+              </div>
+
+              <div class="kill-stats-1 d-inline-block align-middle text-center mx-2">
+                <p class="mb-0"><?php echo $players->stats->kills . " / " . $players->stats->deaths . " / " . $players->stats->assists ?></p>
+                <p class="mb-0 text-muted small text-uppercase"><?php echo getKDA($players->stats->kills, $players->stats->deaths, $players->stats->assists); ?> </p>
+                <?php if($players->stats->largestMultiKill > 1) : ?>
+                  <p class="mb-0 text-muted small text-uppercase"><span class="badge badge-pill badge-primary"><?php echo $mutlikill_const[$players->stats->largestMultiKill]; ?></span></p>
+                <?php endif ?>
+              </div>
+            <?php endif ?>
+          <?php endforeach ?>
 
           <br>
         </li>
@@ -146,5 +192,17 @@
     </div>
   </section>
 
+<script>
+var listItems = $("ul#match-history li");
+listItems.each(function(idx, li) {
+    var product = $(li);
+    var win = product.find("#hidden-win").text();
+    if(win) {
+      product.addClass( "list-group-item-primary" );
+    } else {
+      product.addClass( "list-group-item-danger" );
+    }
+});
+</script>
 </body>
 </html>

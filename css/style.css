@@ -10,6 +10,12 @@ body {
   color: rgb(240, 237, 242);
 }
 
+hr {
+  margin-bottom: 6.4px;
+  margin-top: 6.4px;
+  width: 62px;
+}
+
 .bg-mydark {
   background-color: #26292E;
 }
@@ -25,10 +31,10 @@ body {
 }
 
 .player-icon:before {    /* create a full-height inline block pseudo=element */
-    content: ' ';
-    display: inline-block;
-    vertical-align: middle;  /* vertical alignment of the inline element */
-    height: 100%;
+  content: ' ';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;  /* vertical alignment of the inline element */
 }
 
 .player-level {
@@ -61,6 +67,28 @@ body {
 
 .player-rank-text > p {
   margin-bottom: 0;
+}
+
+.match-history-champion-icon  {
+  width: 56px;
+}
+
+.match-history-summoner-icon > img  {
+  width: 28px;
+}
+
+.match-history-rune-icon > img {
+  width: 28px;
+}
+
+.game-info {
+  width: 72px;
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .challenger-border {
