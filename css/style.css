@@ -21,11 +21,21 @@ hr {
 }
 
 .background {
-  background-image: url(../assets/1.jpg);
+  background: url(../assets/backdrop-magic.png) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 
 .bg-mydark {
-  background-color: #26292E;
+  background-color: #26292e; /* fall back colour */
+  background-color: rgba(38, 41, 46, 0.25);
+}
+
+.bg-navdark {
+  background-color: #121212;
+  border-bottom: 2px solid #262626;
 }
 
 .player-icon {
