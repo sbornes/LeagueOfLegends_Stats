@@ -89,7 +89,7 @@
               strtolower($info->rank->flex->tier) : 'unranked' ); ?>-border">
             </div>
     			</div>
-    			<div class="player-name pl-lg-5 mt-4 mt-lg-0 mb-4 d-lg-inline-block">
+    			<div class="player-name pl-lg-5 mt-5 mt-lg-0 mb-4 d-lg-inline-block">
             <p class="text-center mb-0"><?php echo $info->summoner->name; ?> <span class="badge badge-primary"><?php echo $info->summoner->summonerLevel; ?></span></p>
             <div class="player-region d-none d-lg-block text-muted mb-0">
               <small>#OCEANIA</small>
@@ -146,7 +146,13 @@
             <?php if($players->stats->participantId == $pId) : ?>
 
               <div id="hidden-win" class="d-none"><?php echo $players->stats->win; ?></div>
-              <div class="game-info d-inline-block align-middle small text-center">
+              <div class="d-md-none d-flex w-100 justify-content-between">
+                <p class="mb-0 ellipsis font-weight-bold small"><?php echo $gamemodes_const[$recentMatchData[$index]->queueId] ?> <span class="mb-0 ellipsis text-muted">- <?php echo lastPlayed($recentMatchData[$index]->gameCreation) ?></span> </p>
+                <small><?php echo secondsToMinutes($recentMatchData[$index]->gameDuration); ?></small>
+
+              </div>
+              <hr class="d-md-none d-block hr-small-device mb-3"/>
+              <div class="game-info d-none d-md-inline-block align-middle small text-center mr-3">
                 <p class="mb-0 ellipsis font-weight-bold"><?php echo $gamemodes_const[$recentMatchData[$index]->queueId] ?></p>
                 <p class="mb-0 ellipsis text-muted"><?php echo lastPlayed($recentMatchData[$index]->gameCreation) ?></p>
                 <hr/>
@@ -165,9 +171,11 @@
               <?php $championMasterInfo = json_decode(findChampionMastery($info->summoner->id, $championId)); ?>
 
               <div class="stat-info-1 d-inline-block align-middle">
-                <div class="d-inline-block">
-                  <img class="match-history-champion-icon rounded-circle border-<?php echo $players->stats->win ? "win" : "loss"; ?>" src="<?php echo getChampionIconUrl($championInfo->image->full); ?>" data-champion-id="<?php $championId; ?>" data-toggle="tooltip" title="<p class='text-left'><span class='tooltip-champion'><?php echo $championInfo->name; ?></span> <span class='text-muted'><?php echo $championInfo->title;?></span></p><p class='text-left'><?php echo $championInfo->lore;?></p>">
-                  <img class="match-history-mastery-icon rounded-circle border-<?php echo $players->stats->win ? "win" : "loss"; ?>" style="background-color: <?php echo $players->stats->win ? "#b8daff" : "#f5c6cb"; ?>;" src="assets/champion-master-icons/<?php echo $championMasterInfo->championLevel; ?>.png" data-toggle="tooltip" title="<p class='text-left'><span class='tooltip-champion'><?php echo $championInfo->name; ?></span> <span class='text-muted'><?php echo $championInfo->title;?></span></p><p class='mb-0 text-left'>Level: <span class='text-muted'><?php echo $championMasterInfo->championLevel; ?></span></p><p class='mb-0 text-left'>Points: <span class='text-muted'><?php echo $championMasterInfo->championPoints; ?> / <?php echo ($championMasterInfo->championPoints) + ($championMasterInfo->championPointsUntilNextLevel); ?></span></p>">
+                <div class="d-inline-block align-top">
+                  <img class="match-history-champion-icon rounded-circle" src="<?php echo getChampionIconUrl($championInfo->image->full); ?>" data-champion-id="<?php $championId; ?>" data-toggle="tooltip" title="<p class='text-left'><span class='tooltip-champion'><?php echo $championInfo->name; ?></span> <span class='text-muted'><?php echo $championInfo->title;?></span></p><p class='mb-0 text-left'>Level: <span class='text-muted'><?php echo $championMasterInfo->championLevel; ?></span></p><p class='mb-0 text-left'>Points: <span class='text-muted'><?php echo $championMasterInfo->championPoints; ?> / <?php echo ($championMasterInfo->championPoints) + ($championMasterInfo->championPointsUntilNextLevel); ?></span></p>">
+                  <div class="mastery-icon mastery-icon-<?php echo $championMasterInfo->championLevel; ?>"></div>
+                  <div class="champion-icon-gold-ring"></div>
+                  <!-- <img class="match-history-mastery-icon rounded-circle border-<?php echo $players->stats->win ? "win" : "loss"; ?>" style="background-color: <?php echo $players->stats->win ? "#b8daff" : "#f5c6cb"; ?>;" src="assets/champion-master-icons/<?php echo $championMasterInfo->championLevel; ?>.png" data-toggle="tooltip" title="<p class='text-left'><span class='tooltip-champion'><?php echo $championInfo->name; ?></span> <span class='text-muted'><?php echo $championInfo->title;?></span></p><p class='mb-0 text-left'>Level: <span class='text-muted'><?php echo $championMasterInfo->championLevel; ?></span></p><p class='mb-0 text-left'>Points: <span class='text-muted'><?php echo $championMasterInfo->championPoints; ?> / <?php echo ($championMasterInfo->championPoints) + ($championMasterInfo->championPointsUntilNextLevel); ?></span></p>"> -->
                 </div>
                 <div class="stat-summoner-spell d-inline-block align-middle ml-2">
                   <div class="match-history-summoner-icon d-inline-block">

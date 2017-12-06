@@ -16,6 +16,10 @@ hr {
   width: 62px;
 }
 
+.hr-small-device {
+  width: 100%;
+}
+
 .background {
   background-image: url(../assets/1.jpg);
 }
@@ -74,7 +78,9 @@ hr {
 }
 
 .match-history-champion-icon  {
-  width: 56px;
+  position: relative;
+  width: 46px;
+  z-index: 2;
 }
 
 .match-history-mastery-icon  {
@@ -86,7 +92,9 @@ hr {
 }
 
 .match-history-summoner-icon > img  {
+  position: relative;
   width: 28px;
+  z-index: 2;
 }
 
 .match-history-rune-icon > img {
@@ -103,14 +111,6 @@ hr {
 
 .game-info {
   width: 72px;
-}
-
-.border-win {
-  border: 2px #007bff solid;
-}
-
-.border-loss {
-  border: 2px #dc3545 solid;
 }
 
 .tooltip-champion {
@@ -134,7 +134,7 @@ hr {
   height: 310px;
   left: -27px;
   position: absolute;
-  top: -31px;
+  top: -36px;
   width: 256px;
 }
 
@@ -145,18 +145,18 @@ hr {
   height: 310px;
   left: -27px;
   position: absolute;
-  top: -31px;
+  top: -36px;
   width: 256px;
 }
 
 .diamond-border {
-  background-image: url("../assets/borders/diamond_b2.png");
+  background-image: url("../assets/borders/diamond.png");
   background-repeat: no-repeat;
   background-size: 150px;
   height: 310px;
   left: -27px;
   position: absolute;
-  top: -31px;
+  top: -36px;
   width: 256px;
 }
 
@@ -167,7 +167,7 @@ hr {
   height: 310px;
   left: -27px;
   position: absolute;
-  top: -31px;
+  top: -36px;
   width: 256px;
 }
 
@@ -178,7 +178,7 @@ hr {
   height: 310px;
   left: -26px;
   position: absolute;
-  top: 4px;
+  top: -33px;
   width: 256px;
 }
 
@@ -189,7 +189,7 @@ hr {
   height: 310px;
   left: -21px;
   position: absolute;
-  top: 0;
+  top: -27px;
   width: 256px;
 }
 
@@ -200,7 +200,7 @@ hr {
   height: 310px;
   left: -21px;
   position: absolute;
-  top: 0;
+  top: -27px;
   width: 256px;
 }
 
@@ -211,6 +211,57 @@ hr {
   height: 310px;
   left: -21px;
   position: absolute;
-  top: 0;
+  top: -27px;
   width: 256px;
+}
+
+.champion-icon-gold-ring {
+  background: url(../assets/champion_frame_1.png);
+  background-repeat: no-repeat;
+  background-size: 52px;
+  height: 130px;
+  left: -3px;
+  position: absolute;
+  top: -3px;
+  width: 130px;
+  z-index: 1;
+}
+
+.mastery-icon {
+  background-repeat: no-repeat !important;
+  background-size: 42px !important;
+  height: 496px;
+  left: 3px;
+  position: absolute;
+  top: 12px;
+  width: 252px;
+  z-index: 1;
+}
+
+.mastery-icon-7 {
+  background: url(../assets/champion-master-icons/7.png);
+}
+
+.mastery-icon-6 {
+  background: url(../assets/champion-master-icons/6.png);
+}
+
+.mastery-icon-5 {
+  background: url(../assets/champion-master-icons/5.png);
+}
+
+.mastery-icon-4 {
+  background: url(../assets/champion-master-icons/4.png);
+}
+
+.mastery-icon-3 {
+  background: url(../assets/champion-master-icons/3.png);
+}
+
+.mastery-icon-2 {
+  background: url(../assets/champion-master-icons/2.png);
+}
+
+.mastery-icon-1 {
+  background: url(../assets/champion-master-icons/1.png);
 }

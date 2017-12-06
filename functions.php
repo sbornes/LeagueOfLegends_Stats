@@ -56,8 +56,17 @@
 
         $rank = getLeagueByAccount($stats['summoner']->id);
 
-        $stats['rank']['solo'] = $rank[0];
-        $stats['rank']['flex'] = $rank[1];
+        if(isset($rank[0]))
+          if($rank[0]->queueType == "RANKED_SOLO_5x5")
+            $stats['rank']['solo'] = $rank[0];
+          else
+            $stats['rank']['flex'] = $rank[0];
+
+        if(isset($rank[1]))
+          if($rank[1]->queueType == "RANKED_FLEX_SR")
+            $stats['rank']['flex'] = $rank[1];
+          else
+            $stats['rank']['solo'] = $rank[1];
 
         getChampionMastery($stats['summoner']->id);
 
