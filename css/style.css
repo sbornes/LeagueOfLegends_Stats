@@ -113,6 +113,14 @@ hr {
   border: 2px #dc3545 solid;
 }
 
+.tooltip-champion {
+  color: rgb(255, 206, 80);
+}
+
+.tooltip-summoner-spell {
+  color: rgb(53, 252, 133);
+}
+
 .ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
