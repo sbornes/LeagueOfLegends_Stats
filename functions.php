@@ -52,13 +52,14 @@
 
     function getSummonerInfo($summoner_name)
     {
-
         $stats['summoner'] = getSummonerByName($summoner_name);
 
         $rank = getLeagueByAccount($stats['summoner']->id);
 
         $stats['rank']['solo'] = $rank[0];
         $stats['rank']['flex'] = $rank[1];
+
+        getChampionMastery($stats['summoner']->id);
 
         return json_encode($stats, JSON_FORCE_OBJECT);
     }
@@ -373,6 +374,41 @@
       return $data;
     }
 
+    function getChampionAll()
+    {
+      include "config.php";
+
+      global $cache_path;
+      global $cache_champion;
+
+      $url = "https://oc1.api.riotgames.com/lol/static-data/v3/champions?locale=en_US&tags=all&dataById=false";
+
+      $filename = $cache_path.$cache_champion.md5($url);
+      if( file_exists($filename) )
+      {
+        $response = json_decode(file_get_contents($filename));
+        if(!isset($response->status->message)) {
+          return $response;
+        }
+        echo $response->status->message .' for champion: '.$champion_id;
+      }
+
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Riot-Token: ' . $api_key, 'Accept: application/json'));
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+      $response = curl_exec($ch);
+      curl_close($ch);
+
+      file_put_contents($filename, $response);
+
+      return json_decode($response);
+    }
+
     function getChampionById($champion_id)
     {
       include "config.php";
@@ -385,7 +421,11 @@
       $filename = $cache_path.$cache_champion.md5($url);
       if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
       {
-          return json_decode(file_get_contents($filename));
+        $response = json_decode(file_get_contents($filename));
+        if(!isset($response->status->message)) {
+          return $response;
+        }
+        echo $response->status->message .' for champion: '.$champion_id;
       }
 
       $ch = curl_init();
@@ -470,6 +510,37 @@
       return json_decode($response);
     }
 
+    function getSummonerSpellAll()
+    {
+      include "config.php";
+
+      global $cache_path;
+      global $cache_summoner_spell;
+
+      $url = "https://oc1.api.riotgames.com/lol/static-data/v3/summoner-spells?locale=en_US&dataById=false&tags=all";
+
+      $filename = $cache_path.$cache_summoner_spell.md5($url);
+      if( file_exists($filename) )
+      {
+          return json_decode(file_get_contents($filename));
+      }
+
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Riot-Token: ' . $api_key, 'Accept: application/json'));
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+      $response = curl_exec($ch);
+      curl_close($ch);
+
+      file_put_contents($filename, $response);
+
+      return json_decode($response);
+    }
+
     function getChampionMastery($summoner_id)
     {
       include "config.php";
@@ -478,7 +549,7 @@
       global $cache_champion_mastery;
 
       $url = "https://oc1.api.riotgames.com/lol/champion-mastery/v3/champion-masteries/by-summoner/" . $summoner_id;
-      https://oc1.api.riotgames.com/lol/static-data/v3/summoner-spells/11?locale=en_US&tags=image
+
       $filename = $cache_path.$cache_champion_mastery.md5($url);
       if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
       {
@@ -499,6 +570,27 @@
       file_put_contents($filename, $response);
 
       return json_decode($response);
+    }
+
+
+    function findChampionMastery($summoner_id, $champion_id)
+    {
+      global $cache_path;
+      global $cache_champion_mastery;
+
+      $url = "https://oc1.api.riotgames.com/lol/champion-mastery/v3/champion-masteries/by-summoner/" . $summoner_id;
+
+      $filename = $cache_path.$cache_champion_mastery.md5($url);
+      $data = json_decode(file_get_contents($filename));
+
+      foreach($data as $d)
+      {
+        if($d->championId == $champion_id)
+        {
+            return json_encode($d, JSON_FORCE_OBJECT);
+        }
+      }
+
     }
 
     function getProfileIconUrl($icon_num)

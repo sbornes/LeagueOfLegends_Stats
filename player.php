@@ -11,7 +11,7 @@
         header('Location:index.php');
     }
 
-    retrieveDataSummoner($player);
+    //retrieveDataSummoner($player);
 
     $info = json_decode(getSummonerInfo($player));
     $profileIcon = getProfileIconUrl($info->summoner->profileIconId);
@@ -45,7 +45,9 @@
 	<title>Sbornes | LoL</title>
 </head>
 <body>
-
+  <div style="overflow:hidden;">
+    <div class="background"></div>
+  </div>
   <nav class="navbar navbar-expand-md bg-mydark">
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -152,17 +154,22 @@
                 <p class="mb-0 ellipsis"><?php echo secondsToMinutes($recentMatchData[$index]->gameDuration); ?></p>
               </div>
 
-              <?php $championInfo = getChampionById($players->championId); ?>
-              <?php $summonerSpellInfo1 = getSummonerSpell($players->spell1Id); ?>
-              <?php $summonerSpellInfo2 = getSummonerSpell($players->spell2Id); ?>
+              <?php $championInfoAll = getChampionAll(); ?>
+              <?php $championId = $players->championId ?>
+              <?php $championInfoPre = $championInfoAll->keys->$championId; ?>
+              <?php $championInfo = $championInfoAll->data->$championInfoPre; ?>
 
-
+              <?php $summonerSpellAll = getSummonerSpellAll(); ?>
+              <?php $summonerSpellInfo1 = $summonerSpellAll->data->$summoner_spells_const[$players->spell1Id]; ?>
+              <?php $summonerSpellInfo2 = $summonerSpellAll->data->$summoner_spells_const[$players->spell2Id]; ?>
+              <?php $championMasterInfo = json_decode(findChampionMastery($info->summoner->id, $championId)); ?>
 
               <div class="stat-info-1 d-inline-block align-middle">
-                <img class="match-history-champion-icon rounded-circle" src="<?php echo getChampionIconUrl($championInfo->image->full); ?>" data-champion-id="<?php $championInfo->id; ?>" data-toggle="tooltip" title="<?php echo $championInfo->name; ?><p class='m-0'><?php echo $championInfo->title;?></p>">
-                <img class="match-history-summoner-icon rounded-circle" src="<?php //echo getSummonerSpellIcon($summonerSpellInfo1->image->full); ?>" data-summoner-spell-id="<?php //$summonerSpellInfo1->id; ?>" data-toggle="tooltip" title="<?php //echo $summonerSpellInfo1->name; ?><p class='m-0'><?php //echo $summonerSpellInfo1->description;?></p>">
-
-                <div class="stat-summoner-spell d-inline-block align-middle">
+                <div class="d-inline-block">
+                  <img class="match-history-champion-icon rounded-circle border-<?php echo $players->stats->win ? "win" : "loss"; ?>" src="<?php echo getChampionIconUrl($championInfo->image->full); ?>" data-champion-id="<?php $championId; ?>" data-toggle="tooltip" title="<?php echo $championInfo->name; ?> <span class='text-muted'><?php echo $championInfo->title;?></span>">
+                  <img class="match-history-mastery-icon rounded-circle border-<?php echo $players->stats->win ? "win" : "loss"; ?>" style="background-color: <?php echo $players->stats->win ? "#b8daff" : "#f5c6cb"; ?>;" src="assets/champion-master-icons/<?php echo $championMasterInfo->championLevel; ?>.png">
+                </div>
+                <div class="stat-summoner-spell d-inline-block align-middle ml-2">
                   <div class="match-history-summoner-icon d-inline-block">
                     <img class="rounded-circle d-block mb-2" src="<?php echo getSummonerSpellIcon($summonerSpellInfo1->image->full); ?>" data-summoner-spell-id="<?php echo $summonerSpellInfo1->id; ?>" data-toggle="tooltip" title="<?php echo $summonerSpellInfo1->name; ?><p class='m-0'><?php echo $summonerSpellInfo1->description;?></p>">
                     <img class="rounded-circle d-block" src="<?php echo getSummonerSpellIcon($summonerSpellInfo2->image->full); ?>" data-summoner-spell-id="<?php echo $summonerSpellInfo2->id; ?>" data-toggle="tooltip" title="<?php echo $summonerSpellInfo2->name; ?><p class='m-0'><?php echo $summonerSpellInfo2->description;?></p>">

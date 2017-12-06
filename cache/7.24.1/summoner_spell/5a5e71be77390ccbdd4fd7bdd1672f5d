@@ -1,1 +1,0 @@
-{"image":{"full":"SummonerHaste.png","sprite":"spell0.png","group":"spell","x":336,"y":0,"w":48,"h":48},"name":"Ghost","description":"Your champion gains increased Movement Speed and can move through units for 10 seconds. Grants a maximum of 28-45% (depending on champion level) Movement Speed after accelerating for 2 seconds.","id":6,"summonerLevel":1,"key":"SummonerHaste"}

@@ -1,5 +1,5 @@
 <?php
-	$api_key = "RGAPI-7e228018-3336-4037-a379-f7933034d106";
+	$api_key = "RGAPI-1d7fb36b-f133-4b13-b252-ba7192cc9043";
 
 	$servername = "localhost";
 	$username = "root";
@@ -57,12 +57,32 @@
 			1000 => "PROJECT: Hunters"
 	);
 
-	// Create connection
-	$conn = new mysqli($servername, $username, $password,$dbname);
+	$summoner_spells_const = array(
+		34 => "SummonerSiegeChampSelect2",
+		12 => "SummonerTeleport",
+		33 => "SummonerSiegeChampSelect1",
+		3 => "SummonerExhaust",
+		21 => "SummonerBarrier",
+		13 => "SummonerMana",
+		11 => "SummonerSmite",
+		4 => "SummonerFlash",
+		32 => "SummonerSnowball",
+		14 => "SummonerDot",
+		36 => "SummonerDarkStarChampSelect2",
+		35 => "SummonerDarkStarChampSelect1",
+		30 => "SummonerPoroRecall",
+		6 => "SummonerHaste",
+		7 => "SummonerHeal",
+		31 => "SummonerPoroThrow",
+		1 => "SummonerBoost"
+	)
 
-	// Check connection
-	if ($conn->connect_error) {
-	    die("Connection failed: " . $conn->connect_error);
-	}
+	// Create connection
+	// $conn = new mysqli($servername, $username, $password,$dbname);
+  //
+	// // Check connection
+	// if ($conn->connect_error) {
+	//     die("Connection failed: " . $conn->connect_error);
+	// }
 
 ?>

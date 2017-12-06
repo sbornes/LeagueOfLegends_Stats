@@ -16,6 +16,10 @@ hr {
   width: 62px;
 }
 
+.background {
+  background-image: url(../assets/1.jpg);
+}
+
 .bg-mydark {
   background-color: #26292E;
 }
@@ -73,6 +77,14 @@ hr {
   width: 56px;
 }
 
+.match-history-mastery-icon  {
+  /*background-color: #333;*/
+  bottom: 5px;
+  left: 35px;
+  position: absolute;
+  width: 26px;
+}
+
 .match-history-summoner-icon > img  {
   width: 28px;
 }
@@ -81,8 +93,24 @@ hr {
   width: 28px;
 }
 
+.stat-info-1 {
+  position: relative;
+}
+
+.champion_icon {
+  position: relative;
+}
+
 .game-info {
   width: 72px;
+}
+
+.border-win {
+  border: 2px #007bff solid;
+}
+
+.border-loss {
+  border: 2px #dc3545 solid;
 }
 
 .ellipsis {

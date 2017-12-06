@@ -1,1 +1,0 @@
-{"image":{"full":"SummonerBarrier.png","sprite":"spell0.png","group":"spell","x":0,"y":0,"w":48,"h":48},"name":"Barrier","description":"Shields your champion from 115-455 damage (depending on champion level) for 2 seconds.","id":21,"summonerLevel":4,"key":"SummonerBarrier"}

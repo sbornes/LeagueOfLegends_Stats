@@ -1,1 +1,0 @@
-{"image":{"full":"SummonerFlash.png","sprite":"spell0.png","group":"spell","x":288,"y":0,"w":48,"h":48},"name":"Flash","description":"Teleports your champion a short distance toward your cursor's location.","id":4,"summonerLevel":7,"key":"SummonerFlash"}
