@@ -778,6 +778,41 @@
       //echo $last_played->format('%R%a days');
     }
 
+    function getPlayersInMatch($data)
+    {
+      $arr['blue'] = array();
+      $arr['red'] = array();
+
+      foreach($data->participants as $player)
+      {
+        if($player->teamId == 100)
+          $arr['blue'][] = array('id' => $player->participantId, 'champid' => $player->championId);
+        elseif($player->teamId == 200)
+          $arr['red'][] = array('id' => $player->participantId, 'champid' => $player->championId);
+      }
+
+      foreach($data->participantIdentities as $playerdata)
+      {
+        foreach($arr['blue'] as $index => $player)
+        {
+          if($player['id'] == $playerdata->participantId)
+          {
+            $arr['blue'][$index]['summonerName'] = $playerdata->player->summonerName;
+            break 1;
+          }
+        }
+        foreach($arr['red'] as $index => $player)
+        {
+          if($player['id'] == $playerdata->participantId)
+          {
+            $arr['red'][$index]['summonerName'] = $playerdata->player->summonerName;
+            break 1;
+          }
+        }
+      }
+      return json_encode($arr);
+    }
+
     function getKDA($kills, $deaths, $assists)
     {
       return $deaths ? number_format(($kills+$assists)/($deaths), 2, '.', '') . ' KDA ' : 'Perfect';
@@ -824,4 +859,15 @@
       $description = $description . "<br><br><span style='color: rgb(251, 170, 11);'>Cost</span>: " . $item->gold->total . " (" . $item->gold->sell . ")";
 
       return $description;
+    }
+
+    function getMostPlayedRole($data)
+    {
+      $arr = array();
+      foreach($data->matches as $match)
+      {
+        $arr[$match->lane] = (isset($arr[$match->lane]) ? $arr[$match->lane] : 0) + 1;
+      }
+
+      return json_encode($arr, JSON_FORCE_OBJECT);
     }

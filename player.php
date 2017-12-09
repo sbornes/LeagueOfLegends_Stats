@@ -27,8 +27,8 @@
 	<!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <!-- FontAwesome Glyphicon -->
-  <!-- <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
+  <!-- Circliful -->
+  <link href="css/jquery.circliful.css" rel="stylesheet" type="text/css" />
   <!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -40,6 +40,7 @@
   <!-- Font Awesome. -->
   <script src="https://use.fontawesome.com/734ab645c0.js"></script>
 	<!-- Javascript -->
+  <script src="js/jquery.circliful.min.js"></script>
   <script src="js/main.js"></script>
 
 	<title>Sbornes | LoL</title>
@@ -130,153 +131,180 @@
   </section>
 
   <section id="match-history">
-    <div class="container mt-5 p-4 bg-mydark">
-      <ul id="match-history" class="list-group">
-        <?php foreach ($recentMatch->matches as $index => $value) : ?>
-        <li id="match-<?php echo $index ?>" class="list-group-item mb-2 text-left" data-summoner-id="<?php echo $info->summoner->id ?>" data-game-id="<?php echo $recentMatchData[$index]->gameId ?>">
-          <?php foreach ($recentMatchData[$index]->participantIdentities as $players) : ?>
-            <?php if($players->player->summonerId == $info->summoner->id) { $GLOBALS['pId'] = $players->participantId; } ?>
-            <!-- <?php echo $players->participantId . ' ' . $players->player->summonerName . '<br>'; ?> -->
-          <?php endforeach ?>
+    <div class="container mt-3">
+      <div class="row">
+        <div class="col-xs-12 col-md-3 bg-mydark">
+            <div id="winrate-circle"></div>
+            <?php echo print_r(getMostPlayedRole($recentMatch)); ?>
+        </div>
+        <div class="col-xs-12 col-md-9 pr-0">
+          <ul id="match-history" class="list-group">
+            <?php foreach ($recentMatch->matches as $index => $value) : ?>
+              <?php foreach ($recentMatchData[$index]->participantIdentities as $players) : ?>
+                <?php if($players->player->summonerId == $info->summoner->id) { $GLOBALS['pId'] = $players->participantId; } ?>
+              <?php endforeach ?>
+              <?php foreach ($recentMatchData[$index]->participants as $players) : ?>
+                <?php if($players->stats->participantId == $pId) : ?>
+                <li id="match-<?php echo $index ?>" class="list-group-item mb-2 text-left list-group-item-<?php echo $players->stats->win ? "primary" : "danger"; ?>" data-summoner-id="<?php echo $info->summoner->id ?>" data-game-id="<?php echo $recentMatchData[$index]->gameId ?>">
+                  <div class="d-md-none d-flex w-100 justify-content-between">
+                    <p class="mb-0 ellipsis font-weight-bold small"><?php echo $gamemodes_const[$recentMatchData[$index]->queueId] ?> <span class="mb-0 ellipsis text-muted">- <?php echo lastPlayed($recentMatchData[$index]->gameCreation) ?></span> </p>
+                    <small><?php echo secondsToMinutes($recentMatchData[$index]->gameDuration); ?></small>
 
-          <?php foreach ($recentMatchData[$index]->participants as $players) : ?>
-            <?php if($players->stats->participantId == $pId) : ?>
-
-              <div id="hidden-win" class="d-none"><?php echo $players->stats->win; ?></div>
-              <div class="d-md-none d-flex w-100 justify-content-between">
-                <p class="mb-0 ellipsis font-weight-bold small"><?php echo $gamemodes_const[$recentMatchData[$index]->queueId] ?> <span class="mb-0 ellipsis text-muted">- <?php echo lastPlayed($recentMatchData[$index]->gameCreation) ?></span> </p>
-                <small><?php echo secondsToMinutes($recentMatchData[$index]->gameDuration); ?></small>
-
-              </div>
-              <hr class="d-md-none d-block hr-small-device mb-3"/>
-              <div class="game-info d-none d-md-inline-block align-middle small text-center mr-3">
-                <p class="mb-0 ellipsis font-weight-bold"><?php echo $gamemodes_const[$recentMatchData[$index]->queueId] ?></p>
-                <p class="mb-0 ellipsis text-muted"><?php echo lastPlayed($recentMatchData[$index]->gameCreation) ?></p>
-                <hr/>
-                <p class="mb-0 ellipsis font-weight-bold text-uppercase"><?php echo ($players->stats->win ? "Victory" : "Defeat"); ?></p>
-                <p class="mb-0 ellipsis"><?php echo secondsToMinutes($recentMatchData[$index]->gameDuration); ?></p>
-              </div>
-
-              <?php $championInfoAll = getChampionAll(); ?>
-              <?php $championId = $players->championId ?>
-              <?php $championInfoPre = $championInfoAll->keys->$championId; ?>
-              <?php $championInfo = $championInfoAll->data->$championInfoPre; ?>
-
-              <?php $summonerSpellAll = getSummonerSpellAll(); ?>
-              <?php $summonerSpellInfo1 = $summonerSpellAll->data->$summoner_spells_const[$players->spell1Id]; ?>
-              <?php $summonerSpellInfo2 = $summonerSpellAll->data->$summoner_spells_const[$players->spell2Id]; ?>
-              <?php $championMasterInfo = json_decode(findChampionMastery($info->summoner->id, $championId)); ?>
-              <?php $itemAll = getItemsAll(); ?>
-              <?php $item0 = $players->stats->item0; ?>
-              <?php $item1 = $players->stats->item1; ?>
-              <?php $item2 = $players->stats->item2; ?>
-              <?php $item3 = $players->stats->item3; ?>
-              <?php $item4 = $players->stats->item4; ?>
-              <?php $item5 = $players->stats->item5; ?>
-              <?php $item6 = $players->stats->item6; ?>
-
-              <div class="stat-info-1 d-inline-block align-middle">
-                <div class="d-inline-block align-top">
-                  <img class="match-history-champion-icon rounded-circle" src="<?php echo getChampionIconUrl($championInfo->image->full); ?>" data-champion-id="<?php $championId; ?>" data-toggle="tooltip" title="<p class='text-left'><span class='tooltip-champion'><?php echo $championInfo->name; ?></span> <span class='text-muted'><?php echo $championInfo->title;?></span></p><p class='mb-0 text-left'>Level: <span class='text-muted'><?php echo $championMasterInfo->championLevel; ?></span></p><p class='mb-0 text-left'>Points: <span class='text-muted'><?php echo $championMasterInfo->championPoints; ?> / <?php echo ($championMasterInfo->championPoints) + ($championMasterInfo->championPointsUntilNextLevel); ?></span></p>">
-                  <div class="mastery-icon mastery-icon-<?php echo $championMasterInfo->championLevel; ?>"></div>
-                  <div class="champion-icon-gold-ring"></div>
-                  <!-- <img class="match-history-mastery-icon rounded-circle border-<?php echo $players->stats->win ? "win" : "loss"; ?>" style="background-color: <?php echo $players->stats->win ? "#b8daff" : "#f5c6cb"; ?>;" src="assets/champion-master-icons/<?php echo $championMasterInfo->championLevel; ?>.png" data-toggle="tooltip" title="<p class='text-left'><span class='tooltip-champion'><?php echo $championInfo->name; ?></span> <span class='text-muted'><?php echo $championInfo->title;?></span></p><p class='mb-0 text-left'>Level: <span class='text-muted'><?php echo $championMasterInfo->championLevel; ?></span></p><p class='mb-0 text-left'>Points: <span class='text-muted'><?php echo $championMasterInfo->championPoints; ?> / <?php echo ($championMasterInfo->championPoints) + ($championMasterInfo->championPointsUntilNextLevel); ?></span></p>"> -->
-                </div>
-                <div class="stat-summoner-spell d-inline-block align-middle ml-2">
-                  <div class="match-history-summoner-icon d-inline-block">
-                    <img class="rounded-circle d-block mb-2" src="<?php echo getSummonerSpellIcon($summonerSpellInfo1->image->full); ?>" data-summoner-spell-id="<?php echo $summonerSpellInfo1->id; ?>" data-toggle="tooltip" title="<p class='text-left tooltip-summoner-spell'><?php echo $summonerSpellInfo1->name; ?></p><p class='m-0 text-left'><?php echo $summonerSpellInfo1->description;?></p>">
-                    <img class="rounded-circle d-block" src="<?php echo getSummonerSpellIcon($summonerSpellInfo2->image->full); ?>" data-summoner-spell-id="<?php echo $summonerSpellInfo2->id; ?>" data-toggle="tooltip" title="<p class='text-left tooltip-summoner-spell'><?php echo $summonerSpellInfo2->name; ?></p><p class='m-0 text-left'><?php echo $summonerSpellInfo2->description;?></p>">
+                  </div>
+                  <hr class="d-md-none d-block hr-small-device mb-3"/>
+                  <div class="game-info d-none d-md-inline-block align-middle small text-center mr-3">
+                    <p class="mb-0 ellipsis font-weight-bold"><?php echo $gamemodes_const[$recentMatchData[$index]->queueId] ?></p>
+                    <p class="mb-0 ellipsis text-muted"><?php echo lastPlayed($recentMatchData[$index]->gameCreation) ?></p>
+                    <hr/>
+                    <p class="mb-0 ellipsis font-weight-bold text-uppercase"><?php echo ($players->stats->win ? "Victory" : "Defeat"); ?></p>
+                    <p class="mb-0 ellipsis"><?php echo secondsToMinutes($recentMatchData[$index]->gameDuration); ?></p>
                   </div>
 
-                  <div class="match-history-rune-icon d-inline-block">
-                    <img class="rounded-circle d-block mb-2" src="assets/perkStyle/<?php echo $players->stats->perkPrimaryStyle; ?>.png">
-                    <img class="rounded-circle d-block" src="assets/perkStyle/<?php echo $players->stats->perkSubStyle; ?>.png">
+                  <?php $championInfoAll = getChampionAll(); ?>
+                  <?php $championId = $players->championId ?>
+                  <?php $championInfoPre = $championInfoAll->keys->$championId; ?>
+                  <?php $championInfo = $championInfoAll->data->$championInfoPre; ?>
+                  <?php $playersInMatch = json_decode(getPlayersInMatch($recentMatchData[$index])); ?>
+
+                  <?php $summonerSpellAll = getSummonerSpellAll(); ?>
+                  <?php $summonerSpellInfo1 = $summonerSpellAll->data->$summoner_spells_const[$players->spell1Id]; ?>
+                  <?php $summonerSpellInfo2 = $summonerSpellAll->data->$summoner_spells_const[$players->spell2Id]; ?>
+                  <?php $championMasterInfo = json_decode(findChampionMastery($info->summoner->id, $championId)); ?>
+                  <?php $itemAll = getItemsAll(); ?>
+                  <?php $item0 = $players->stats->item0; ?>
+                  <?php $item1 = $players->stats->item1; ?>
+                  <?php $item2 = $players->stats->item2; ?>
+                  <?php $item3 = $players->stats->item3; ?>
+                  <?php $item4 = $players->stats->item4; ?>
+                  <?php $item5 = $players->stats->item5; ?>
+                  <?php $item6 = $players->stats->item6; ?>
+
+                  <div class="stat-info-1 d-inline-block align-middle">
+                    <div class="d-inline-block align-top">
+                      <img class="match-history-champion-icon rounded-circle" src="<?php echo getChampionIconUrl($championInfo->image->full); ?>" data-champion-id="<?php $championId; ?>" data-toggle="tooltip" title="<p class='text-left'><span class='tooltip-champion'><?php echo $championInfo->name; ?></span> <span class='text-muted'><?php echo $championInfo->title;?></span></p><p class='mb-0 text-left'>Level: <span class='text-muted'><?php echo $championMasterInfo->championLevel; ?></span></p><p class='mb-0 text-left'>Points: <span class='text-muted'><?php echo $championMasterInfo->championPoints; ?> / <?php echo ($championMasterInfo->championPoints) + ($championMasterInfo->championPointsUntilNextLevel); ?></span></p>">
+                      <div class="mastery-icon mastery-icon-<?php echo $championMasterInfo->championLevel; ?>"></div>
+                      <div class="champion-icon-gold-ring"></div>
+                      <!-- <img class="match-history-mastery-icon rounded-circle border-<?php echo $players->stats->win ? "win" : "loss"; ?>" style="background-color: <?php echo $players->stats->win ? "#b8daff" : "#f5c6cb"; ?>;" src="assets/champion-master-icons/<?php echo $championMasterInfo->championLevel; ?>.png" data-toggle="tooltip" title="<p class='text-left'><span class='tooltip-champion'><?php echo $championInfo->name; ?></span> <span class='text-muted'><?php echo $championInfo->title;?></span></p><p class='mb-0 text-left'>Level: <span class='text-muted'><?php echo $championMasterInfo->championLevel; ?></span></p><p class='mb-0 text-left'>Points: <span class='text-muted'><?php echo $championMasterInfo->championPoints; ?> / <?php echo ($championMasterInfo->championPoints) + ($championMasterInfo->championPointsUntilNextLevel); ?></span></p>"> -->
+                    </div>
+                    <div class="stat-summoner-spell d-inline-block align-middle ml-2">
+                      <div class="match-history-summoner-icon d-inline-block">
+                        <img class="rounded-circle d-block mb-2" src="<?php echo getSummonerSpellIcon($summonerSpellInfo1->image->full); ?>" data-summoner-spell-id="<?php echo $summonerSpellInfo1->id; ?>" data-toggle="tooltip" title="<p class='text-left tooltip-summoner-spell'><?php echo $summonerSpellInfo1->name; ?></p><p class='m-0 text-left'><?php echo $summonerSpellInfo1->description;?></p>">
+                        <img class="rounded-circle d-block" src="<?php echo getSummonerSpellIcon($summonerSpellInfo2->image->full); ?>" data-summoner-spell-id="<?php echo $summonerSpellInfo2->id; ?>" data-toggle="tooltip" title="<p class='text-left tooltip-summoner-spell'><?php echo $summonerSpellInfo2->name; ?></p><p class='m-0 text-left'><?php echo $summonerSpellInfo2->description;?></p>">
+                      </div>
+
+                      <div class="match-history-rune-icon d-inline-block">
+                        <img class="rounded-circle d-block mb-2" src="assets/perkStyle/<?php echo $players->stats->perkPrimaryStyle; ?>.png">
+                        <img class="rounded-circle d-block" src="assets/perkStyle/<?php echo $players->stats->perkSubStyle; ?>.png">
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
 
-              <div class="kill-stats-1 d-inline-block align-middle text-center mx-2">
-                <p class="mb-0"><?php echo $players->stats->kills . " / " . $players->stats->deaths . " / " . $players->stats->assists ?></p>
-                <p class="mb-0 text-muted small text-uppercase"><?php echo getKDA($players->stats->kills, $players->stats->deaths, $players->stats->assists); ?> </p>
-                <?php if($players->stats->largestMultiKill > 1) : ?>
-                  <p class="mb-0 text-muted small text-uppercase"><span class="badge badge-pill badge-primary"><?php echo $mutlikill_const[$players->stats->largestMultiKill]; ?></span></p>
+                  <div class="kill-stats-1 d-inline-block align-middle text-center mx-2">
+                    <p class="mb-0"><?php echo $players->stats->kills . " / " . $players->stats->deaths . " / " . $players->stats->assists ?></p>
+                    <p class="mb-0 text-muted small text-uppercase"><?php echo getKDA($players->stats->kills, $players->stats->deaths, $players->stats->assists); ?> </p>
+                    <?php if($players->stats->largestMultiKill > 1) : ?>
+                      <p class="mb-0 text-muted small text-uppercase"><span class="badge badge-pill badge-primary"><?php echo $mutlikill_const[$players->stats->largestMultiKill]; ?></span></p>
+                    <?php endif ?>
+                  </div>
+
+                  <div class="kill-stats-2 d-inline-block align-middle text-center mx-2">
+                    <p class="mb-0 text-uppercase">Level <?php echo $players->stats->champLevel ?></p>
+                    <p class="mb-0 text-muted small text-uppercase"><?php echo totalCS($players->stats); ?> cs</p>
+                  </div>
+
+                  <div class="items-1 d-inline-block align-middle text-center ml-2">
+                    <div id="row-1">
+
+                    <?php if(isset($itemAll->data->$item0)) : ?>
+                      <div class="item d-inline-block mb-1"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item0->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item0->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item0); ?></p>"></div>
+                    <?php else : ?>
+                      <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
+                    <?php endif ?>
+
+                    <?php if(isset($itemAll->data->$item1)) : ?>
+                      <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item1->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item1->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item1); ?></p>"></div>
+                    <?php else : ?>
+                      <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
+                    <?php endif ?>
+
+                    <?php if(isset($itemAll->data->$item2)) : ?>
+                      <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item2->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item2->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item2); ?></p>"></div>
+                    <?php else : ?>
+                      <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
+                    <?php endif ?>
+                    </div>
+                    <div id="row-2">
+                    <?php if(isset($itemAll->data->$item3)) : ?>
+                      <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item3->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item3->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item3); ?></p>"></div>
+                    <?php else : ?>
+                      <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
+                    <?php endif ?>
+
+                    <?php if(isset($itemAll->data->$item4)) : ?>
+                      <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item4->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item4->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item4); ?></p>"></div>
+                    <?php else : ?>
+                      <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
+                    <?php endif ?>
+
+                    <?php if(isset($itemAll->data->$item5)) : ?>
+                      <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item5->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item5->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item5); ?></p>"></div>
+                    <?php else : ?>
+                      <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
+                    <?php endif ?>
+                    </div>
+                  </div>
+                  <div class="items-2 d-inline-block align-middle text-center mr-2">
+                  <?php if(isset($itemAll->data->$item6)) : ?>
+                    <div class="item d-block-inline"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item6->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item6->name; ?></p><p class='m-0 text-left'><?php echo $itemAll->data->$item6->description; ?></p>"></div>
+                  <?php else : ?>
+                    <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
+                  <?php endif ?>
+                  </div>
+
+                  <div class="players-in-match-1 d-inline-block align-middle mx-2">
+                    <div class="blue-team d-inline-block">
+                    <?php foreach($playersInMatch->blue as $matchPlayers) : ?>
+                      <?php $champid = $matchPlayers->champid; ?>
+                      <?php $championInfoPre = $championInfoAll->keys->$champid; ?>
+                      <?php $championInfo = $championInfoAll->data->$championInfoPre; ?>
+
+                      <div class="match-history-player-other ellipsis"> <img class="match-history-champion-icon-other" src="<?php echo getChampionIconUrl($championInfo->image->full); ?>"  data-toggle="tooltip" title="<p class='mb-0 tooltip-champion'><?php echo $championInfo->name; ?></p>"><span class="match-history-player-text small"><a href="player.php?player_name=<?php echo $matchPlayers->summonerName; ?>" class="match-history-player-link"> <?php echo $matchPlayers->summonerName; ?> </a> </span> </div>
+                    <?php endforeach; ?>
+                    </div>
+                    <div class="red-team d-inline-block">
+                    <?php foreach($playersInMatch->red as $matchPlayers) : ?>
+                      <?php $champid = $matchPlayers->champid; ?>
+                      <?php $championInfoPre = $championInfoAll->keys->$champid; ?>
+                      <?php $championInfo = $championInfoAll->data->$championInfoPre; ?>
+                      <div class="match-history-player-other ellipsis"> <img class="match-history-champion-icon-other" src="<?php echo getChampionIconUrl($championInfo->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 tooltip-champion'><?php echo $championInfo->name; ?></p>"><span class="match-history-player-text small"><a href="player.php?player_name=<?php echo $matchPlayers->summonerName; ?>" class="match-history-player-link"> <?php echo $matchPlayers->summonerName; ?> </a> </span> </div>
+                    <?php endforeach; ?>
+                    </div>
+                  </div>
+                </li>
                 <?php endif ?>
-              </div>
-
-              <div class="kill-stats-2 d-inline-block align-middle text-center mx-2">
-                <p class="mb-0 text-uppercase">Level <?php echo $players->stats->champLevel ?></p>
-                <p class="mb-0 text-muted small text-uppercase"><?php echo totalCS($players->stats); ?> cs</p>
-              </div>
-
-              <div class="items-1 d-inline-block align-middle text-center ml-2">
-                <div id="row-1">
-
-                <?php if(isset($itemAll->data->$item0)) : ?>
-                  <div class="item d-inline-block mb-1"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item0->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item0->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item0); ?></p>"></div>
-                <?php else : ?>
-                  <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
-                <?php endif ?>
-
-                <?php if(isset($itemAll->data->$item1)) : ?>
-                  <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item1->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item1->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item1); ?></p>"></div>
-                <?php else : ?>
-                  <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
-                <?php endif ?>
-
-                <?php if(isset($itemAll->data->$item2)) : ?>
-                  <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item2->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item2->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item2); ?></p>"></div>
-                <?php else : ?>
-                  <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
-                <?php endif ?>
-                </div>
-                <div id="row-2">
-                <?php if(isset($itemAll->data->$item3)) : ?>
-                  <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item3->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item3->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item3); ?></p>"></div>
-                <?php else : ?>
-                  <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
-                <?php endif ?>
-
-                <?php if(isset($itemAll->data->$item4)) : ?>
-                  <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item4->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item4->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item4); ?></p>"></div>
-                <?php else : ?>
-                  <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
-                <?php endif ?>
-
-                <?php if(isset($itemAll->data->$item5)) : ?>
-                  <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item5->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item5->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item5); ?></p>"></div>
-                <?php else : ?>
-                  <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
-                <?php endif ?>
-                </div>
-              </div>
-              <div class="items-2 d-inline-block align-middle text-center mr-2">
-              <?php if(isset($itemAll->data->$item6)) : ?>
-                <div class="item d-block-inline"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item6->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item6->name; ?></p><p class='m-0 text-left'><?php echo $itemAll->data->$item6->description; ?></p>"></div>
-              <?php else : ?>
-                <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
-              <?php endif ?>
-              </div>
-            <?php endif ?>
-          <?php endforeach ?>
-
-          <br>
-        </li>
-        <?php endforeach ?>
-      </ul>
+              <?php endforeach ?>
+            <?php endforeach ?>
+          </ul>
+        </div>
+      </div>
     </div>
   </section>
 
+
+
 <script>
-var listItems = $("ul#match-history li");
-listItems.each(function(idx, li) {
-    var product = $(li);
-    var win = product.find("#hidden-win").text();
-    if(win) {
-      product.addClass( "list-group-item-primary" );
-    } else {
-      product.addClass( "list-group-item-danger" );
-    }
-});
+    $( document ).ready(function() {
+	$("#winrate-circle").circliful({
+    animation: 1,
+            animationStep: 6,
+            foregroundBorderWidth: 5,
+            backgroundBorderWidth: 1,
+            percent: 88,
+            foregroundColor: '#3498DB',
+            text: 'Win Rate',
+            textY: 130
+           });
+   });
 </script>
 </body>
 </html>
