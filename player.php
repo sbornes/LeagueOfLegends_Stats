@@ -130,10 +130,10 @@
   </section>
 
   <section id="match-history">
-    <div class="container mt-5">
+    <div class="container mt-5 p-4 bg-mydark">
       <ul id="match-history" class="list-group">
         <?php foreach ($recentMatch->matches as $index => $value) : ?>
-        <li id="match-<?php echo $index ?>" class="list-group-item mb-2" data-summoner-id="<?php echo $info->summoner->id ?>" data-game-id="<?php echo $recentMatchData[$index]->gameId ?>">
+        <li id="match-<?php echo $index ?>" class="list-group-item mb-2 text-left" data-summoner-id="<?php echo $info->summoner->id ?>" data-game-id="<?php echo $recentMatchData[$index]->gameId ?>">
           <?php foreach ($recentMatchData[$index]->participantIdentities as $players) : ?>
             <?php if($players->player->summonerId == $info->summoner->id) { $GLOBALS['pId'] = $players->participantId; } ?>
             <!-- <?php echo $players->participantId . ' ' . $players->player->summonerName . '<br>'; ?> -->
@@ -166,6 +166,14 @@
               <?php $summonerSpellInfo1 = $summonerSpellAll->data->$summoner_spells_const[$players->spell1Id]; ?>
               <?php $summonerSpellInfo2 = $summonerSpellAll->data->$summoner_spells_const[$players->spell2Id]; ?>
               <?php $championMasterInfo = json_decode(findChampionMastery($info->summoner->id, $championId)); ?>
+              <?php $itemAll = getItemsAll(); ?>
+              <?php $item0 = $players->stats->item0; ?>
+              <?php $item1 = $players->stats->item1; ?>
+              <?php $item2 = $players->stats->item2; ?>
+              <?php $item3 = $players->stats->item3; ?>
+              <?php $item4 = $players->stats->item4; ?>
+              <?php $item5 = $players->stats->item5; ?>
+              <?php $item6 = $players->stats->item6; ?>
 
               <div class="stat-info-1 d-inline-block align-middle">
                 <div class="d-inline-block align-top">
@@ -193,6 +201,60 @@
                 <?php if($players->stats->largestMultiKill > 1) : ?>
                   <p class="mb-0 text-muted small text-uppercase"><span class="badge badge-pill badge-primary"><?php echo $mutlikill_const[$players->stats->largestMultiKill]; ?></span></p>
                 <?php endif ?>
+              </div>
+
+              <div class="kill-stats-2 d-inline-block align-middle text-center mx-2">
+                <p class="mb-0 text-uppercase">Level <?php echo $players->stats->champLevel ?></p>
+                <p class="mb-0 text-muted small text-uppercase"><?php echo totalCS($players->stats); ?> cs</p>
+              </div>
+
+              <div class="items-1 d-inline-block align-middle text-center ml-2">
+                <div id="row-1">
+
+                <?php if(isset($itemAll->data->$item0)) : ?>
+                  <div class="item d-inline-block mb-1"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item0->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item0->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item0); ?></p>"></div>
+                <?php else : ?>
+                  <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
+                <?php endif ?>
+
+                <?php if(isset($itemAll->data->$item1)) : ?>
+                  <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item1->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item1->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item1); ?></p>"></div>
+                <?php else : ?>
+                  <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
+                <?php endif ?>
+
+                <?php if(isset($itemAll->data->$item2)) : ?>
+                  <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item2->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item2->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item2); ?></p>"></div>
+                <?php else : ?>
+                  <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
+                <?php endif ?>
+                </div>
+                <div id="row-2">
+                <?php if(isset($itemAll->data->$item3)) : ?>
+                  <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item3->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item3->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item3); ?></p>"></div>
+                <?php else : ?>
+                  <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
+                <?php endif ?>
+
+                <?php if(isset($itemAll->data->$item4)) : ?>
+                  <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item4->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item4->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item4); ?></p>"></div>
+                <?php else : ?>
+                  <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
+                <?php endif ?>
+
+                <?php if(isset($itemAll->data->$item5)) : ?>
+                  <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item5->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item5->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item5); ?></p>"></div>
+                <?php else : ?>
+                  <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
+                <?php endif ?>
+                </div>
+              </div>
+              <div class="items-2 d-inline-block align-middle text-center mr-2">
+              <?php if(isset($itemAll->data->$item6)) : ?>
+                <div class="item d-block-inline"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item6->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item6->name; ?></p><p class='m-0 text-left'><?php echo $itemAll->data->$item6->description; ?></p>"></div>
+              <?php else : ?>
+                <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
+              <?php endif ?>
               </div>
             <?php endif ?>
           <?php endforeach ?>

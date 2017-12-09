@@ -1,5 +1,5 @@
 <?php
-	$api_key = "RGAPI-1d7fb36b-f133-4b13-b252-ba7192cc9043";
+	$api_key = "RGAPI-0b1fd16c-5868-436e-84b3-3b00312f31a2";
 
 	$servername = "localhost";
 	$username = "root";

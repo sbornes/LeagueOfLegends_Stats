@@ -16,6 +16,7 @@ hr {
   width: 62px;
 }
 
+
 .hr-small-device {
   width: 100%;
 }
@@ -36,6 +37,10 @@ hr {
 .bg-navdark {
   background-color: #121212;
   border-bottom: 2px solid #262626;
+}
+
+.tooltip-inner {
+  max-width: 350px;
 }
 
 .player-icon {
@@ -112,7 +117,22 @@ hr {
 }
 
 .stat-info-1 {
+  max-width: 118px;
+  min-width: 118px;
   position: relative;
+  width: 118px;
+}
+
+.kill-stats-1 {
+  max-width: 84px;
+  min-width: 84px;
+  width: 84px;
+}
+
+.kill-stats-2 {
+  max-width: 68px;
+  min-width: 68px;
+  width: 68px;
 }
 
 .champion_icon {
@@ -120,7 +140,20 @@ hr {
 }
 
 .game-info {
+  max-width: 72px;
+  min-width: 72px;
   width: 72px;
+}
+
+.items-1 {
+  max-width: 104px;
+  min-width: 104px;
+  width: 104px;
+}
+
+.item > img {
+  height: 32px;
+  width: 32px;
 }
 
 .tooltip-champion {
@@ -129,6 +162,10 @@ hr {
 
 .tooltip-summoner-spell {
   color: rgb(53, 252, 133);
+}
+
+.tooltip-item {
+  color: rgb(69, 244, 255);
 }
 
 .ellipsis {
