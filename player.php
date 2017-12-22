@@ -101,7 +101,7 @@
           <div class="player-rank mx-auto float-lg-right text-center">
             <?php if(isset($info->rank->solo)) : ?>
             <div class="player-rank-solo d-md-inline-block px-md-3 px-lg-2 px-xl-4o">
-              <div class="d-sm-inline-block align-middle" data-toggle="tooltip" title="<?php echo $info->rank->solo->leagueName; ?><p class='m-0'><?php echo "WinRatio: " . round(($info->rank->solo->wins/(($info->rank->solo->wins)+($info->rank->solo->losses)))*100);?>%</p><p class='m-0'><?php echo $info->rank->solo->wins; ?>W <?php echo $info->rank->solo->losses; ?>L </p>">
+              <div class="d-sm-inline-block align-middle" data-toggle="tooltip" title="<?php echo $info->rank->solo->leagueName; ?><p class='m-0'><?php echo round(($info->rank->solo->wins/(($info->rank->solo->wins)+($info->rank->solo->losses)))*100);?>% Win rate</p><p class='m-0'><?php echo $info->rank->solo->wins; ?>W <?php echo $info->rank->solo->losses; ?>L </p>">
                 <img class="player-rank-icon" src="assets/tier-icons/<?php echo strtolower($info->rank->solo->tier.'_'.$info->rank->solo->rank); ?>.png">
               </div>
               <div class="player-rank-text d-lg-inline-block align-middle">
@@ -113,7 +113,7 @@
             <?php endif; ?>
             <?php if(isset($info->rank->flex)) : ?>
             <div class="player-rank-flex d-md-inline-block px-md-3 px-lg-2 px-xl-4">
-              <div class="d-sm-inline-block align-middle" data-toggle="tooltip" title="<?php echo $info->rank->flex->leagueName; ?><p class='m-0'><?php echo "WinRatio: " . round(($info->rank->flex->wins/(($info->rank->flex->wins)+($info->rank->flex->losses)))*100);?>%</p><p class='m-0'><?php echo $info->rank->flex->wins; ?>W <?php echo $info->rank->flex->losses; ?>L </p>">
+              <div class="d-sm-inline-block align-middle" data-toggle="tooltip" title="<?php echo $info->rank->flex->leagueName; ?><p class='m-0'><?php echo round(($info->rank->flex->wins/(($info->rank->flex->wins)+($info->rank->flex->losses)))*100);?>% Win rate</p><p class='m-0'><?php echo $info->rank->flex->wins; ?>W <?php echo $info->rank->flex->losses; ?>L </p>">
                 <img class="player-rank-icon" src="assets/tier-icons/<?php echo strtolower($info->rank->flex->tier.'_'.$info->rank->flex->rank); ?>.png">
               </div>
               <div class="player-rank-text d-lg-inline-block align-middle">
@@ -135,6 +135,7 @@
       <div class="row">
         <div class="col-xs-12 col-md-3 bg-mydark">
             <div id="winrate-circle"></div>
+            <?php echo print_r(getRecentPlayedWith($recentMatch, $recentMatchData)); ?>
             <?php echo print_r(getMostPlayedRole($recentMatch)); ?>
         </div>
         <div class="col-xs-12 col-md-9 pr-0">
@@ -263,7 +264,7 @@
 
                   <div class="players-in-match-1 d-inline-block align-middle mx-2">
                     <div class="blue-team d-inline-block">
-                    <?php foreach($playersInMatch->blue as $matchPlayers) : ?>
+                    <?php foreach($playersInMatch->blue->player as $matchPlayers) : ?>
                       <?php $champid = $matchPlayers->champid; ?>
                       <?php $championInfoPre = $championInfoAll->keys->$champid; ?>
                       <?php $championInfo = $championInfoAll->data->$championInfoPre; ?>
@@ -272,7 +273,7 @@
                     <?php endforeach; ?>
                     </div>
                     <div class="red-team d-inline-block">
-                    <?php foreach($playersInMatch->red as $matchPlayers) : ?>
+                    <?php foreach($playersInMatch->red->player as $matchPlayers) : ?>
                       <?php $champid = $matchPlayers->champid; ?>
                       <?php $championInfoPre = $championInfoAll->keys->$champid; ?>
                       <?php $championInfo = $championInfoAll->data->$championInfoPre; ?>

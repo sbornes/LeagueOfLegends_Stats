@@ -75,6 +75,7 @@
     function getSummonerInfo($summoner_name)
     {
         $stats['summoner'] = getSummonerByName($summoner_name);
+
         $rank = getLeagueByAccount($stats['summoner']->id);
 
         if(isset($rank[0]))
@@ -269,7 +270,7 @@
 
         $response = curl_exec($ch);
         curl_close($ch);
-        if(!isset($response->status_code))
+        if(!isset($response->status->status_code))
           file_put_contents($filename, $response);
         return json_decode($response);
     }
@@ -330,7 +331,7 @@
         $response = curl_exec($ch);
         curl_close($ch);
 
-        if(!isset($response->status_code))
+        if(!isset($response->status->status_code))
           file_put_contents($filename, $response);
 
         return json_decode($response);
@@ -362,7 +363,7 @@
       $response = curl_exec($ch);
       curl_close($ch);
 
-      if(!isset($response->status_code))
+      if(!isset($response->status->status_code))
         file_put_contents($filename, $response);
 
       return json_decode($response);
@@ -504,7 +505,7 @@
         $response = curl_exec($ch);
         curl_close($ch);
 
-        if(!isset($response->status_code))
+        if(!isset($response->status->status_code))
           file_put_contents($filename, $response);
 
         $response = json_decode($response, true);
@@ -780,32 +781,38 @@
 
     function getPlayersInMatch($data)
     {
-      $arr['blue'] = array();
-      $arr['red'] = array();
+      $arr['blue']['player'] = array();
+      $arr['blue']['kills'] = 0;
+      $arr['red']['player'] = array();
+      $arr['red']['kills'] = 0;
 
       foreach($data->participants as $player)
       {
-        if($player->teamId == 100)
-          $arr['blue'][] = array('id' => $player->participantId, 'champid' => $player->championId);
-        elseif($player->teamId == 200)
-          $arr['red'][] = array('id' => $player->participantId, 'champid' => $player->championId);
+        if($player->teamId == 100) {
+          $arr['blue']['player'][] = array('id' => $player->participantId, 'champid' => $player->championId);
+          $arr['blue']['kills'] += $player->stats->kills;
+        }
+        elseif($player->teamId == 200) {
+          $arr['red']['player'][] = array('id' => $player->participantId, 'champid' => $player->championId);
+          $arr['red']['kills'] += $player->stats->kills;
+        }
       }
 
       foreach($data->participantIdentities as $playerdata)
       {
-        foreach($arr['blue'] as $index => $player)
+        foreach($arr['blue']['player'] as $index => $player)
         {
           if($player['id'] == $playerdata->participantId)
           {
-            $arr['blue'][$index]['summonerName'] = $playerdata->player->summonerName;
+            $arr['blue']['player'][$index]['summonerName'] = $playerdata->player->summonerName;
             break 1;
           }
         }
-        foreach($arr['red'] as $index => $player)
+        foreach($arr['red']['player'] as $index => $player)
         {
           if($player['id'] == $playerdata->participantId)
           {
-            $arr['red'][$index]['summonerName'] = $playerdata->player->summonerName;
+            $arr['red']['player'][$index]['summonerName'] = $playerdata->player->summonerName;
             break 1;
           }
         }
@@ -870,4 +877,15 @@
       }
 
       return json_encode($arr, JSON_FORCE_OBJECT);
+    }
+
+    function getRecentPlayedWith($recentMatch, $recentMatchData)
+    {
+      foreach ($recentMatch->matches as $index => $value)
+      {
+        foreach ($recentMatchData[$index]->participantIdentities as $players)
+        {
+
+        }
+      }
     }
