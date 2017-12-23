@@ -574,6 +574,16 @@
       return json_decode($response);
     }
 
+    function GetSummonerSpellSpecific($summonerSpellAll, $spell_id)
+    {
+      foreach ($summonerSpellAll->data as $value) {
+
+        if($value->id == $spell_id) {
+          return $value;
+        }
+      }
+    }
+
     function getChampionMastery($summoner_id)
     {
       include "config.php";
@@ -858,10 +868,17 @@
       foreach($matches as $index => $key)
       {
         //echo $matches[$index][0] .' -> ' . $matches[$index][1] . '<br>';
-        $description = preg_replace('/\@(.*?)\@/', $item->effect->$matches[$index][1], $description, 1);
+        //echo '1 ' . $matches[$index][1] . ' <br>';
+        if(preg_match('/\*[0-9]*/', $matches[$index][1], $multiplier))
+          $matches[$index][1] = preg_replace('/\*[0-9]*/', "", $matches[$index][1], 1);
+        // echo '2 '. $matches[$index][1] . ' <br>';
+        // echo '3 '. $item->effect->$matches[$index][1] . (isset($multiplier[0]) ? $multiplier[0] : "") . ' <br>';
+        // echo '= ' . eval('return ' . $item->effect->$matches[$index][1] . (isset($multiplier[0]) ? $multiplier[0] : "") . ';');
+        $description = preg_replace('/\@(.*?)\@/', eval('return ' . $item->effect->$matches[$index][1] . (isset($multiplier[0]) ? $multiplier[0] : "") . ';'), $description, 1);
       }
 
       $description = preg_replace("/Killing monsters grants <font color=/", "<br><br>Killing monsters grants <font color=", $description);
+      $description = preg_replace("/<hr>/", "<br>", $description);
 
       $description = $description . "<br><br><span style='color: rgb(251, 170, 11);'>Cost</span>: " . $item->gold->total . " (" . $item->gold->sell . ")";
 

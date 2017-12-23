@@ -54,7 +54,8 @@
 			960 => "Doom Bots",
 			980 => "Star Guardian Invasion: Normal",
 			990 => "Star Guardian Invasion: Onslaught",
-			1000 => "PROJECT: Hunters"
+			1000 => "PROJECT: Hunters",
+			1010 => "Snow ARURF games"
 	);
 
 	$summoner_spells_const = array(

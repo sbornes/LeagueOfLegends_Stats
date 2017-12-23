@@ -145,13 +145,13 @@
                 <?php if($players->stats->participantId == $pId) : ?>
                 <li id="match-<?php echo $index ?>" class="list-group-item mb-2 text-left list-group-item-<?php echo $players->stats->win ? "primary" : "danger"; if($players->stats->win) $gWins++; ?>" data-summoner-id="<?php echo $info->summoner->id ?>" data-game-id="<?php echo $recentMatchData[$index]->gameId ?>">
                   <div class="d-md-none d-flex w-100 justify-content-between">
-                    <p class="mb-0 ellipsis font-weight-bold small"><?php echo $gamemodes_const[$recentMatchData[$index]->queueId] ?> <span class="mb-0 ellipsis text-muted">- <?php echo lastPlayed($recentMatchData[$index]->gameCreation) ?></span> </p>
+                    <p class="mb-0 ellipsis font-weight-bold small"><?php echo isset($gamemodes_const[$recentMatchData[$index]->queueId]) ? $gamemodes_const[$recentMatchData[$index]->queueId] : "Unknown" ?> <span class="mb-0 ellipsis text-muted">- <?php echo lastPlayed($recentMatchData[$index]->gameCreation) ?></span> </p>
                     <small><?php echo secondsToMinutes($recentMatchData[$index]->gameDuration); ?></small>
 
                   </div>
                   <hr class="d-md-none d-block hr-small-device mb-3"/>
                   <div class="game-info d-none d-md-inline-block align-middle small text-center mr-3">
-                    <p class="mb-0 ellipsis font-weight-bold"><?php echo $gamemodes_const[$recentMatchData[$index]->queueId] ?></p>
+                    <p class="mb-0 ellipsis font-weight-bold"><?php echo isset($gamemodes_const[$recentMatchData[$index]->queueId]) ? $gamemodes_const[$recentMatchData[$index]->queueId] : "Unknown"; ?></p>
                     <p class="mb-0 ellipsis text-muted"><?php echo lastPlayed($recentMatchData[$index]->gameCreation) ?></p>
                     <hr/>
                     <p class="mb-0 ellipsis font-weight-bold text-uppercase"><?php echo ($players->stats->win ? "Victory" : "Defeat"); ?></p>
@@ -165,8 +165,8 @@
                   <?php $playersInMatch = json_decode(getPlayersInMatch($recentMatchData[$index])); ?>
 
                   <?php $summonerSpellAll = getSummonerSpellAll(); ?>
-                  <?php $summonerSpellInfo1 = $summonerSpellAll->data->$summoner_spells_const[$players->spell1Id]; ?>
-                  <?php $summonerSpellInfo2 = $summonerSpellAll->data->$summoner_spells_const[$players->spell2Id]; ?>
+                  <?php $summonerSpellInfo1 = GetSummonerSpellSpecific($summonerSpellAll, $players->spell1Id); ?>
+                  <?php $summonerSpellInfo2 = GetSummonerSpellSpecific($summonerSpellAll, $players->spell2Id); ?>
                   <?php $championMasterInfo = json_decode(findChampionMastery($info->summoner->id, $championId)); ?>
                   <?php $itemAll = getItemsAll(); ?>
                   <?php $item0 = $players->stats->item0; ?>
