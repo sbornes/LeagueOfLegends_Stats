@@ -18,6 +18,7 @@
     $recentMatch = getMatchRecentByAccount($info->summoner->accountId);
     $recentMatchData = getMatchRecentData($recentMatch);
 
+    $gWins = 0;
     //ChromePhp::log($recentMatch);
 ?>
 
@@ -133,12 +134,8 @@
   <section id="match-history">
     <div class="container mt-3">
       <div class="row">
-        <div class="col-xs-12 col-md-3 bg-mydark">
-            <div id="winrate-circle"></div>
-            <?php echo print_r(getRecentPlayedWith($recentMatch, $recentMatchData)); ?>
-            <?php echo print_r(getMostPlayedRole($recentMatch)); ?>
-        </div>
-        <div class="col-xs-12 col-md-9 pr-0">
+        <!-- START MATCH HISTORY COLUMN -->
+        <div class="col-xs-12 col-md-9 order-2 pr-0">
           <ul id="match-history" class="list-group">
             <?php foreach ($recentMatch->matches as $index => $value) : ?>
               <?php foreach ($recentMatchData[$index]->participantIdentities as $players) : ?>
@@ -146,7 +143,7 @@
               <?php endforeach ?>
               <?php foreach ($recentMatchData[$index]->participants as $players) : ?>
                 <?php if($players->stats->participantId == $pId) : ?>
-                <li id="match-<?php echo $index ?>" class="list-group-item mb-2 text-left list-group-item-<?php echo $players->stats->win ? "primary" : "danger"; ?>" data-summoner-id="<?php echo $info->summoner->id ?>" data-game-id="<?php echo $recentMatchData[$index]->gameId ?>">
+                <li id="match-<?php echo $index ?>" class="list-group-item mb-2 text-left list-group-item-<?php echo $players->stats->win ? "primary" : "danger"; if($players->stats->win) $gWins++; ?>" data-summoner-id="<?php echo $info->summoner->id ?>" data-game-id="<?php echo $recentMatchData[$index]->gameId ?>">
                   <div class="d-md-none d-flex w-100 justify-content-between">
                     <p class="mb-0 ellipsis font-weight-bold small"><?php echo $gamemodes_const[$recentMatchData[$index]->queueId] ?> <span class="mb-0 ellipsis text-muted">- <?php echo lastPlayed($recentMatchData[$index]->gameCreation) ?></span> </p>
                     <small><?php echo secondsToMinutes($recentMatchData[$index]->gameDuration); ?></small>
@@ -287,6 +284,15 @@
             <?php endforeach ?>
           </ul>
         </div>
+        <!-- END MATCH HISTORY COLUMN -->
+        <!-- START DATA COLUMN -->
+        <div class="col-xs-12 col-md-3 order-1 bg-mydark">
+            <div id="winrate-circle"></div>
+            <?php echo print_r(getRecentPlayedWith($recentMatch, $recentMatchData)); ?>
+            <pre> <?php echo print_r(getMostPlayedRole($recentMatch)); ?> </pre>
+            <pre> WINS: <?php echo $gWins ?> </pre>
+        </div>
+        <!-- END DATA COLUMN -->
       </div>
     </div>
   </section>
@@ -300,7 +306,7 @@
             animationStep: 6,
             foregroundBorderWidth: 5,
             backgroundBorderWidth: 1,
-            percent: 88,
+            percent: '<?php echo($gWins/20*100);?>',
             foregroundColor: '#3498DB',
             text: 'Win Rate',
             textY: 130

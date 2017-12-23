@@ -873,10 +873,10 @@
       $arr = array();
       foreach($data->matches as $match)
       {
-        $arr[$match->lane] = (isset($arr[$match->lane]) ? $arr[$match->lane] : 0) + 1;
+        $arr[$match->lane] = array('games' => (isset($arr[$match->lane]['games']) ? $arr[$match->lane]['games'] : 0) + 1);
       }
 
-      return json_encode($arr, JSON_FORCE_OBJECT);
+      return json_encode($arr, JSON_PRETTY_PRINT);
     }
 
     function getRecentPlayedWith($recentMatch, $recentMatchData)
