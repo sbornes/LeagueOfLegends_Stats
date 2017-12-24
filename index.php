@@ -1,8 +1,3 @@
-<!--
-http://na.leagueoflegends.com/en/rss.xml
-https://stackoverflow.com/questions/43512868/how-to-add-pattern-regex-for-form-validation
-https://stackoverflow.com/questions/19540032/validation-plugin-is-not-taking-bootstrap-3-0-class-has-success-on-success
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
