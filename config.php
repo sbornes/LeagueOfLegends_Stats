@@ -1,12 +1,12 @@
 <?php
-	$api_key = "RGAPI-ee01a6b3-c9b1-4e47-9334-110521e2071a";
+	$api_key = "RGAPI-50b15b9e-822a-4b26-b43c-56ea9b3786c1";
 
 	$servername = "localhost";
 	$username = "root";
 	$password = "";
 	$dbname = "league_site";
 
-	$league_version = "7.23.1";
+	$league_version = "8.24.1";
 
 	$mutlikill_const = array(
 		2 => "Double Kill",
@@ -76,7 +76,87 @@
 		7 => "SummonerHeal",
 		31 => "SummonerPoroThrow",
 		1 => "SummonerBoost"
-	)
+	);
+
+	$valid_regions = array(
+		"NA" => array (
+			"platform" => ["NA1", "NA2"],
+			"host" => "na1.api.riotgames.com",
+			"language" => "en_US",
+			"name" => "North America",
+			"code" => "NA"
+		),
+		"EUNE" => array (
+			"platform" => ["EUN1"],
+			"host" => "eun1.api.riotgames.com",
+			"language" => "en_US",
+			"name" => "Europe Nordic & East",
+			"code" => "EUNE"
+		),
+		"EUW" => array (
+			"platform" => ["EUW1"],
+			"host" => "euw1.api.riotgames.com",
+			"language" => "en_US",
+			"name" => "Europe West",
+			"code" => "EUW"
+		),
+		"OCE" => array (
+			"platform" => ["OC1"],
+			"host" => "oc1.api.riotgames.com",
+			"language" => "en_AU",
+			"name" => "Oceania",
+			"code" => "OCE"
+		),
+		"LAN" => array (
+			"platform" => ["LA1"],
+			"host" => "la1.api.riotgames.com",
+			"language" => "en_AU",
+			"name" => "Latin America North",
+			"code" => "LAN"
+		),
+		"LAS" => array (
+			"platform" => ["LA2"],
+			"host" => "la2.api.riotgames.com",
+			"language" => "en_AU",
+			"name" => "Latin America South",
+			"code" => "LAS"
+		),
+		"KR" => array (
+			"platform" => ["KR"],
+			"host" => "kr.api.riotgames.com",
+			"language" => "ko_KR",
+			"name" => "Korea",
+			"code" => "KR"
+		),
+		"JP" => array (
+			"platform" => ["JP1"],
+			"host" => "jp1.api.riotgames.com",
+			"language" => "ja_JP",
+			"name" => "Japan",
+			"code" => "JP"
+		),
+		"BR" => array (
+			"platform" => ["BR1"],
+			"host" => "br1.api.riotgames.com",
+			"language" => "pt_BR",
+			"name" => "Brazil"
+		),
+		"TR" => array (
+			"platform" => ["TR1"],
+			"host" => "tr1.api.riotgames.com",
+			"language" => "tr_TR",
+			"name" => "Turkey",
+			"code" => "TR"
+		),
+		"RU" => array (
+			"platform" => ["RU"],
+			"host" => "ru.api.riotgames.com",
+			"language" => "tr_TR",
+			"name" => "Russia",
+			"code" => "ru_RU"
+		),
+	);
+	
 
 	// Create connection
 	// $conn = new mysqli($servername, $username, $password,$dbname);

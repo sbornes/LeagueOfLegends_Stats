@@ -6,19 +6,33 @@
     include_once "ChromePhp.php";
 
     $player = $_GET['player_name'];
+    $region = $_GET['region'];
 
-    if (!isset($player)) {
+    if (!isset($player) || !isset($region)) {
         header('Location:index.php');
+        return false;
+    }
+
+    $region_data = getRegionData($region);
+    if(!$region_data) {
+      header('Location:index.php');
+      return false;
     }
 
     //retrieveDataSummoner($player);
 
-    $info = json_decode(getSummonerInfo($player));
-    $profileIcon = getProfileIconUrl($info->summoner->profileIconId);
-    $recentMatch = getMatchRecentByAccount($info->summoner->accountId);
-    $recentMatchData = getMatchRecentData($recentMatch);
+    $info = json_decode(getSummonerInfo($player, $region_data["host"]));
 
-    $gWins = 0;
+    if($info == false) {
+      header('Location:index.php');
+      return false;
+    }
+
+    $profileIcon = getProfileIconUrl($info->summoner->profileIconId);
+    // $recentMatch = getMatchRecentByAccount($info->summoner->accountId);
+    // $recentMatchData = getMatchRecentData($recentMatch, $region_data["host"]);
+
+    $GLOBALS['gWins'] = 0;
     //ChromePhp::log($recentMatch);
 ?>
 
@@ -35,8 +49,8 @@
 	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 	<link rel="stylesheet" href="css/style.css">
 	<!-- jQuery first, then Tether, then Bootstrap JS. -->
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
   <!-- Font Awesome. -->
   <script src="https://use.fontawesome.com/734ab645c0.js"></script>
@@ -51,7 +65,7 @@
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="/league_website">
+    <a class="navbar-brand" href="/league">
   		<img src="assets/icon.png" width="30" height="30" class="d-inline-block align-top" alt="">
   	</a>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -67,12 +81,31 @@
         </li> -->
       </ul>
       <div class="my-2 my-lg-0">
-  			<div class="input-group ">
-  					<input id="username" type="text" class="form-control" placeholder="Summoner...">
-  					<span class="input-group-btn">
-  						<button id="search-btn" class="btn btn-primary" type="button" onclick="userValid()"><i class="fa fa-search" aria-hidden="true"></i></button>
-  					</span>
-  				</div>
+      <div class="input-group ">
+          <div class="input-group-prepend">
+          <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="regionMenu" value=<?php echo $region ?>><?php echo $region ?></button>
+            <div class="dropdown-menu">
+            <a class="dropdown-item" href="#" data-code="NA" >North America</a>
+              <a class="dropdown-item" href="#" data-code="EUNE">Europe Nordic & East</a>
+              <a class="dropdown-item" href="#" data-code="EUW">Europe West</a>
+              <a class="dropdown-item" href="#" data-code="OCE">Oceania</a>
+              <a class="dropdown-item" href="#" data-code="LAN">LAN</a>
+              <a class="dropdown-item" href="#" data-code="LAS">LAS</a>
+
+              <div role="separator" class="dropdown-divider"></div>
+          
+              <a class="dropdown-item" href="#" data-code="KR"><span class="flag-icon flag-icon-kr"></span> Korea</a>
+              <a class="dropdown-item" href="#" data-code="JP"><span class="flag-icon flag-icon-jp"></span> Japan</a>
+              <a class="dropdown-item" href="#" data-code="BR"><span class="flag-icon flag-icon-br"></span> Brazil</a>
+              <a class="dropdown-item" href="#" data-code="TR"><span class="flag-icon flag-icon-tr"></span> Turkey</a>
+              <a class="dropdown-item" href="#" data-code="RU"><span class="flag-icon flag-icon-ru"></span> Russia</a>
+            </div>
+          </div>
+            <input id="username" type="text" class="form-control" placeholder="Summoner...">
+            <span class="input-group-btn">
+              <button id="search-btn" class="btn btn-primary" type="button" onclick="userValid()"><i class="fa fa-search" aria-hidden="true"></i></button>
+            </span>
+          </div>
       </div>
     </div>
   </nav>
@@ -103,7 +136,8 @@
             <?php if(isset($info->rank->solo)) : ?>
             <div class="player-rank-solo d-md-inline-block px-md-3 px-lg-2 px-xl-4o">
               <div class="d-sm-inline-block align-middle" data-toggle="tooltip" title="<?php echo $info->rank->solo->leagueName; ?><p class='m-0'><?php echo round(($info->rank->solo->wins/(($info->rank->solo->wins)+($info->rank->solo->losses)))*100);?>% Win rate</p><p class='m-0'><?php echo $info->rank->solo->wins; ?>W <?php echo $info->rank->solo->losses; ?>L </p>">
-                <img class="player-rank-icon" src="assets/tier-icons/<?php echo strtolower($info->rank->solo->tier.'_'.$info->rank->solo->rank); ?>.png">
+                <!-- <img class="player-rank-icon" src="assets/tier-icons/<?php echo strtolower($info->rank->solo->tier.'_'.$info->rank->solo->rank); ?>.png"> -->
+                  <img class="player-rank-icon" src="assets/tier-icons-new/<?php echo ucfirst(strtolower($info->rank->solo->tier.'_Emblem')); ?>.png">
               </div>
               <div class="player-rank-text d-lg-inline-block align-middle">
                 <p class="p-queue text-muted"><small>SOLO/DUO</small></p>
@@ -115,7 +149,8 @@
             <?php if(isset($info->rank->flex)) : ?>
             <div class="player-rank-flex d-md-inline-block px-md-3 px-lg-2 px-xl-4">
               <div class="d-sm-inline-block align-middle" data-toggle="tooltip" title="<?php echo $info->rank->flex->leagueName; ?><p class='m-0'><?php echo round(($info->rank->flex->wins/(($info->rank->flex->wins)+($info->rank->flex->losses)))*100);?>% Win rate</p><p class='m-0'><?php echo $info->rank->flex->wins; ?>W <?php echo $info->rank->flex->losses; ?>L </p>">
-                <img class="player-rank-icon" src="assets/tier-icons/<?php echo strtolower($info->rank->flex->tier.'_'.$info->rank->flex->rank); ?>.png">
+                <!-- <img class="player-rank-icon" src="assets/tier-icons/<?php echo strtolower($info->rank->flex->tier.'_'.$info->rank->flex->rank); ?>.png"> -->
+                <img class="player-rank-icon" src="assets/tier-icons-new/<?php echo ucfirst(strtolower($info->rank->flex->tier.'_Emblem')); ?>.png">
               </div>
               <div class="player-rank-text d-lg-inline-block align-middle">
                 <p class="p-queue text-muted"><small>FLEX 5V5</small></p>
@@ -135,161 +170,18 @@
     <div class="container mt-3">
       <div class="row">
         <!-- START MATCH HISTORY COLUMN -->
-        <div class="col-xs-12 col-md-9 order-2 pr-0">
-          <ul id="match-history" class="list-group">
-            <?php foreach ($recentMatch->matches as $index => $value) : ?>
-              <?php foreach ($recentMatchData[$index]->participantIdentities as $players) : ?>
-                <?php if($players->player->summonerId == $info->summoner->id) { $GLOBALS['pId'] = $players->participantId; } ?>
-              <?php endforeach ?>
-              <?php foreach ($recentMatchData[$index]->participants as $players) : ?>
-                <?php if($players->stats->participantId == $pId) : ?>
-                <li id="match-<?php echo $index ?>" class="list-group-item mb-2 text-left list-group-item-<?php echo $players->stats->win ? "primary" : "danger"; if($players->stats->win) $gWins++; ?>" data-summoner-id="<?php echo $info->summoner->id ?>" data-game-id="<?php echo $recentMatchData[$index]->gameId ?>">
-                  <div class="d-md-none d-flex w-100 justify-content-between">
-                    <p class="mb-0 ellipsis font-weight-bold small"><?php echo isset($gamemodes_const[$recentMatchData[$index]->queueId]) ? $gamemodes_const[$recentMatchData[$index]->queueId] : "Unknown" ?> <span class="mb-0 ellipsis text-muted">- <?php echo lastPlayed($recentMatchData[$index]->gameCreation) ?></span> </p>
-                    <small><?php echo secondsToMinutes($recentMatchData[$index]->gameDuration); ?></small>
-
-                  </div>
-                  <hr class="d-md-none d-block hr-small-device mb-3"/>
-                  <div class="game-info d-none d-md-inline-block align-middle small text-center mr-3">
-                    <p class="mb-0 ellipsis font-weight-bold"><?php echo isset($gamemodes_const[$recentMatchData[$index]->queueId]) ? $gamemodes_const[$recentMatchData[$index]->queueId] : "Unknown"; ?></p>
-                    <p class="mb-0 ellipsis text-muted"><?php echo lastPlayed($recentMatchData[$index]->gameCreation) ?></p>
-                    <hr/>
-                    <p class="mb-0 ellipsis font-weight-bold text-uppercase"><?php echo ($players->stats->win ? "Victory" : "Defeat"); ?></p>
-                    <p class="mb-0 ellipsis"><?php echo secondsToMinutes($recentMatchData[$index]->gameDuration); ?></p>
-                  </div>
-
-                  <?php $championInfoAll = getChampionAll(); ?>
-                  <?php $championId = $players->championId ?>
-                  <?php $championInfoPre = $championInfoAll->keys->$championId; ?>
-                  <?php $championInfo = $championInfoAll->data->$championInfoPre; ?>
-                  <?php $playersInMatch = json_decode(getPlayersInMatch($recentMatchData[$index])); ?>
-
-                  <?php $summonerSpellAll = getSummonerSpellAll(); ?>
-                  <?php $summonerSpellInfo1 = GetSummonerSpellSpecific($summonerSpellAll, $players->spell1Id); ?>
-                  <?php $summonerSpellInfo2 = GetSummonerSpellSpecific($summonerSpellAll, $players->spell2Id); ?>
-                  <?php $championMasterInfo = json_decode(findChampionMastery($info->summoner->id, $championId)); ?>
-                  <?php $itemAll = getItemsAll(); ?>
-                  <?php $item0 = $players->stats->item0; ?>
-                  <?php $item1 = $players->stats->item1; ?>
-                  <?php $item2 = $players->stats->item2; ?>
-                  <?php $item3 = $players->stats->item3; ?>
-                  <?php $item4 = $players->stats->item4; ?>
-                  <?php $item5 = $players->stats->item5; ?>
-                  <?php $item6 = $players->stats->item6; ?>
-
-                  <div class="stat-info-1 d-inline-block align-middle">
-                    <div class="d-inline-block align-top">
-                      <img class="match-history-champion-icon rounded-circle" src="<?php echo getChampionIconUrl($championInfo->image->full); ?>" data-champion-id="<?php $championId; ?>" data-toggle="tooltip" title="<p class='text-left'><span class='tooltip-champion'><?php echo $championInfo->name; ?></span> <span class='text-muted'><?php echo $championInfo->title;?></span></p><p class='mb-0 text-left'>Level: <span class='text-muted'><?php echo $championMasterInfo->championLevel; ?></span></p><p class='mb-0 text-left'>Points: <span class='text-muted'><?php echo $championMasterInfo->championPoints; ?> / <?php echo ($championMasterInfo->championPoints) + ($championMasterInfo->championPointsUntilNextLevel); ?></span></p>">
-                      <div class="mastery-icon mastery-icon-<?php echo $championMasterInfo->championLevel; ?>"></div>
-                      <div class="champion-icon-gold-ring"></div>
-                      <!-- <img class="match-history-mastery-icon rounded-circle border-<?php echo $players->stats->win ? "win" : "loss"; ?>" style="background-color: <?php echo $players->stats->win ? "#b8daff" : "#f5c6cb"; ?>;" src="assets/champion-master-icons/<?php echo $championMasterInfo->championLevel; ?>.png" data-toggle="tooltip" title="<p class='text-left'><span class='tooltip-champion'><?php echo $championInfo->name; ?></span> <span class='text-muted'><?php echo $championInfo->title;?></span></p><p class='mb-0 text-left'>Level: <span class='text-muted'><?php echo $championMasterInfo->championLevel; ?></span></p><p class='mb-0 text-left'>Points: <span class='text-muted'><?php echo $championMasterInfo->championPoints; ?> / <?php echo ($championMasterInfo->championPoints) + ($championMasterInfo->championPointsUntilNextLevel); ?></span></p>"> -->
-                    </div>
-                    <div class="stat-summoner-spell d-inline-block align-middle ml-2">
-                      <div class="match-history-summoner-icon d-inline-block">
-                        <img class="rounded-circle d-block mb-2" src="<?php echo getSummonerSpellIcon($summonerSpellInfo1->image->full); ?>" data-summoner-spell-id="<?php echo $summonerSpellInfo1->id; ?>" data-toggle="tooltip" title="<p class='text-left tooltip-summoner-spell'><?php echo $summonerSpellInfo1->name; ?></p><p class='m-0 text-left'><?php echo $summonerSpellInfo1->description;?></p>">
-                        <img class="rounded-circle d-block" src="<?php echo getSummonerSpellIcon($summonerSpellInfo2->image->full); ?>" data-summoner-spell-id="<?php echo $summonerSpellInfo2->id; ?>" data-toggle="tooltip" title="<p class='text-left tooltip-summoner-spell'><?php echo $summonerSpellInfo2->name; ?></p><p class='m-0 text-left'><?php echo $summonerSpellInfo2->description;?></p>">
-                      </div>
-
-                      <div class="match-history-rune-icon d-inline-block">
-                        <img class="rounded-circle d-block mb-2" src="assets/perkStyle/<?php echo $players->stats->perkPrimaryStyle; ?>.png">
-                        <img class="rounded-circle d-block" src="assets/perkStyle/<?php echo $players->stats->perkSubStyle; ?>.png">
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="kill-stats-1 d-inline-block align-middle text-center mx-2">
-                    <p class="mb-0"><?php echo $players->stats->kills . " / " . $players->stats->deaths . " / " . $players->stats->assists ?></p>
-                    <p class="mb-0 text-muted small text-uppercase"><?php echo getKDA($players->stats->kills, $players->stats->deaths, $players->stats->assists); ?> </p>
-                    <?php if($players->stats->largestMultiKill > 1) : ?>
-                      <p class="mb-0 text-muted small text-uppercase"><span class="badge badge-pill badge-primary"><?php echo $mutlikill_const[$players->stats->largestMultiKill]; ?></span></p>
-                    <?php endif ?>
-                  </div>
-
-                  <div class="kill-stats-2 d-inline-block align-middle text-center mx-2">
-                    <p class="mb-0 text-uppercase">Level <?php echo $players->stats->champLevel ?></p>
-                    <p class="mb-0 text-muted small text-uppercase"><?php echo totalCS($players->stats); ?> cs</p>
-                  </div>
-
-                  <div class="items-1 d-inline-block align-middle text-center ml-2">
-                    <div id="row-1">
-
-                    <?php if(isset($itemAll->data->$item0)) : ?>
-                      <div class="item d-inline-block mb-1"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item0->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item0->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item0); ?></p>"></div>
-                    <?php else : ?>
-                      <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
-                    <?php endif ?>
-
-                    <?php if(isset($itemAll->data->$item1)) : ?>
-                      <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item1->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item1->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item1); ?></p>"></div>
-                    <?php else : ?>
-                      <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
-                    <?php endif ?>
-
-                    <?php if(isset($itemAll->data->$item2)) : ?>
-                      <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item2->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item2->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item2); ?></p>"></div>
-                    <?php else : ?>
-                      <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
-                    <?php endif ?>
-                    </div>
-                    <div id="row-2">
-                    <?php if(isset($itemAll->data->$item3)) : ?>
-                      <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item3->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item3->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item3); ?></p>"></div>
-                    <?php else : ?>
-                      <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
-                    <?php endif ?>
-
-                    <?php if(isset($itemAll->data->$item4)) : ?>
-                      <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item4->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item4->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item4); ?></p>"></div>
-                    <?php else : ?>
-                      <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
-                    <?php endif ?>
-
-                    <?php if(isset($itemAll->data->$item5)) : ?>
-                      <div class="item d-inline-block"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item5->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item5->name; ?></p><p class='m-0 text-left'><?php echo formatItemDescription($itemAll->data->$item5); ?></p>"></div>
-                    <?php else : ?>
-                      <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
-                    <?php endif ?>
-                    </div>
-                  </div>
-                  <div class="items-2 d-inline-block align-middle text-center mr-2">
-                  <?php if(isset($itemAll->data->$item6)) : ?>
-                    <div class="item d-block-inline"><img class="rounded" src="<?php echo getItemIcon($itemAll->data->$item6->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 text-left tooltip-item'><?php echo $itemAll->data->$item6->name; ?></p><p class='m-0 text-left'><?php echo $itemAll->data->$item6->description; ?></p>"></div>
-                  <?php else : ?>
-                    <div class="item d-inline-block mb-1"><img class="rounded" src="assets/no-item.png"></div>
-                  <?php endif ?>
-                  </div>
-
-                  <div class="players-in-match-1 d-inline-block align-middle mx-2">
-                    <div class="blue-team d-inline-block">
-                    <?php foreach($playersInMatch->blue->player as $matchPlayers) : ?>
-                      <?php $champid = $matchPlayers->champid; ?>
-                      <?php $championInfoPre = $championInfoAll->keys->$champid; ?>
-                      <?php $championInfo = $championInfoAll->data->$championInfoPre; ?>
-
-                      <div class="match-history-player-other ellipsis"> <img class="match-history-champion-icon-other" src="<?php echo getChampionIconUrl($championInfo->image->full); ?>"  data-toggle="tooltip" title="<p class='mb-0 tooltip-champion'><?php echo $championInfo->name; ?></p>"><span class="match-history-player-text small"><a href="player.php?player_name=<?php echo $matchPlayers->summonerName; ?>" class="match-history-player-link"> <?php echo $matchPlayers->summonerName; ?> </a> </span> </div>
-                    <?php endforeach; ?>
-                    </div>
-                    <div class="red-team d-inline-block">
-                    <?php foreach($playersInMatch->red->player as $matchPlayers) : ?>
-                      <?php $champid = $matchPlayers->champid; ?>
-                      <?php $championInfoPre = $championInfoAll->keys->$champid; ?>
-                      <?php $championInfo = $championInfoAll->data->$championInfoPre; ?>
-                      <div class="match-history-player-other ellipsis"> <img class="match-history-champion-icon-other" src="<?php echo getChampionIconUrl($championInfo->image->full); ?>" data-toggle="tooltip" title="<p class='mb-0 tooltip-champion'><?php echo $championInfo->name; ?></p>"><span class="match-history-player-text small"><a href="player.php?player_name=<?php echo $matchPlayers->summonerName; ?>" class="match-history-player-link"> <?php echo $matchPlayers->summonerName; ?> </a> </span> </div>
-                    <?php endforeach; ?>
-                    </div>
-                  </div>
-                </li>
-                <?php endif ?>
-              <?php endforeach ?>
-            <?php endforeach ?>
-          </ul>
+        <div class="col-xs-12 col-md-9 order-2 pr-0" id="lol-right-column">
+          <div class="loader">
+            <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          </div>
+          
         </div>
         <!-- END MATCH HISTORY COLUMN -->
         <!-- START DATA COLUMN -->
-        <div class="col-xs-12 col-md-3 order-1 bg-mydark">
+        <div class="col-xs-12 col-md-3 order-1 bg-mydark" id="lol-left-column">
             <div id="winrate-circle"></div>
-            <?php echo print_r(getRecentPlayedWith($recentMatch, $recentMatchData)); ?>
-            <pre> <?php echo print_r(getMostPlayedRole($recentMatch)); ?> </pre>
+            <?php /* echo print_r(getRecentPlayedWith($recentMatch, $recentMatchData)); */ ?>
+            <pre>  <?php /*echo print_r(getMostPlayedRole($recentMatch));*/ ?> </pre>
             <pre> WINS: <?php echo $gWins ?> </pre>
         </div>
         <!-- END DATA COLUMN -->
@@ -301,17 +193,54 @@
 
 <script>
     $( document ).ready(function() {
-	$("#winrate-circle").circliful({
-    animation: 1,
-            animationStep: 6,
-            foregroundBorderWidth: 5,
-            backgroundBorderWidth: 1,
-            percent: '<?php echo($gWins/20*100);?>',
-            foregroundColor: '#3498DB',
-            text: 'Win Rate',
-            textY: 130
-           });
-   });
+      $('#lol-right-column').find(".loader").show();
+      var player = <?php echo json_encode($player); ?>;
+      var region_data = <?php echo json_encode($region_data); ?>;
+      // $('#lol-right-column').load("player_match_history.php", {info: data_info, recentMatch: data_match, recentMatchData: data_match_data, region: data_region }, function(responseTxt, statusTxt, xhr){
+      //   if(statusTxt == "success")
+      //     alert("External content loaded successfully!");
+      //   if(statusTxt == "error")
+      //     alert("Error: " + xhr.status + ": " + xhr.statusText);
+
+      //   alert("hu");
+      // });
+
+      $.ajax({
+        type:'POST',
+        url: "player_match_history.php",
+        cache: false,
+        data: {
+          player: player, 
+          region_data: region_data
+        },
+        success: function(html) {
+          $('#lol-right-column').append(html);
+          console.log("succes");
+          $('#lol-right-column').find(".loader").hide();
+
+          $("#lol-right-column > ul > li[data-type='history-row']").each(function(i) {
+            $(this).delay(100 * i).hide().fadeIn(500);
+            console.log("fading: " + i + " " + this);
+        });
+        },
+        complete: function(){
+          $('#loading-image').hide();
+        }
+      });
+
+ 
+
+      $("#winrate-circle").circliful({
+        animation: 1,
+                animationStep: 6,
+                foregroundBorderWidth: 5,
+                backgroundBorderWidth: 1,
+                percent: '<?php echo($gWins/20*100);?>',
+                foregroundColor: '#3498DB',
+                text: 'Win Rate',
+                textY: 130
+              });
+      });
 </script>
 </body>
 </html>

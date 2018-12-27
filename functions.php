@@ -15,7 +15,7 @@
     $cache_item_icon = 'item_icon/';
 
     $cache_path = 'cache/';
-    $version = getLatestVersion();
+    $version = getLatestVersion("oce");
     $cache_path = $cache_path.$version.'/';
 
     if (!file_exists($cache_path)) {
@@ -70,11 +70,19 @@
       mkdir($cache_path.$cache_item_icon, 0777, true);
     }
 
+    function getRegionData($region_code) {
+      include "config.php";
 
+      return isset($valid_regions[$region_code]) ? $valid_regions[$region_code] : null;
+    }
 
-    function getSummonerInfo($summoner_name)
+    function getSummonerInfo($summoner_name, $region)
     {
-        $stats['summoner'] = getSummonerByName($summoner_name);
+        $stats['summoner'] = getSummonerByName($summoner_name, $region);
+
+        if(isset($stats["summoner"]->status)) {
+          return false;
+        }
 
         $rank = getLeagueByAccount($stats['summoner']->id);
 
@@ -246,14 +254,16 @@
         return true;
     }
 
-    function getSummonerByName($summoner_name)
+    function getSummonerByName($summoner_name, $region)
     {
         include "config.php";
 
         global $cache_path;
         global $cache_summoner;
 
-        $url = "https://oc1.api.riotgames.com/lol/summoner/v3/summoners/by-name/" . rawurlencode($summoner_name);
+        // $url = "https://oc1.api.riotgames.com/lol/summoner/v3/summoners/by-name/" . rawurlencode($summoner_name);
+        $url = "https://" . $region . "/lol/summoner/v4/summoners/by-name/" . rawurlencode($summoner_name);
+        
 
         $filename = $cache_path.$cache_summoner.md5($url);
         if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
@@ -312,8 +322,8 @@
         global $cache_path;
         global $cache_league;
 
-        $url = "https://oc1.api.riotgames.com/lol/league/v3/positions/by-summoner/" . $summoner_id;
-
+        // $url = "https://oc1.api.riotgames.com/lol/league/v3/positions/by-summoner/" . $summoner_id;
+        $url = "https://oc1.api.riotgames.com/lol/league/v4/positions/by-summoner/" . $summoner_id;
         $filename = $cache_path.$cache_league.md5($url);
         if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
         {
@@ -344,7 +354,7 @@
       global $cache_path;
       global $cache_match_history;
 
-      $url = "https://oc1.api.riotgames.com/lol/match/v3/matchlists/by-account/" . $summoner_id . "/recent";
+      $url = "https://oc1.api.riotgames.com/lol/match/v4/matchlists/by-account/" . $summoner_id . "?endIndex=20&beginIndex=0";
 
       $filename = $cache_path.$cache_match_history.md5($url);
       if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
@@ -369,7 +379,7 @@
       return json_decode($response);
     }
 
-    function getMatchRecentData($json)
+    function getMatchRecentData($json, $region)
     {
       $data = [];
 
@@ -380,7 +390,7 @@
         global $cache_path;
         global $cache_match_history_data;
 
-        $url = "https://oc1.api.riotgames.com/lol/match/v3/matches/" . $value->gameId;
+        $url = "https://" . $region . "/lol/match/v4/matches/" . $value->gameId;
 
         $filename = $cache_path.$cache_match_history_data.md5($url);
         if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
@@ -410,15 +420,16 @@
     {
       include "config.php";
 
+      global $version;
       global $cache_path;
       global $cache_champion;
 
-      $url = "https://oc1.api.riotgames.com/lol/static-data/v3/champions?locale=en_US&tags=all&dataById=false";
-
+      // $url = "https://oc1.api.riotgames.com/lol/static-data/v3/champions?locale=en_US&tags=all&dataById=false";
+      $url = "http://ddragon.leagueoflegends.com/cdn/" . $version . "/data/en_US/champion.json";
       $filename = $cache_path.$cache_champion.md5($url);
       if( file_exists($filename) )
       {
-        $response = json_decode(file_get_contents($filename));
+        $response = json_decode(file_get_contents($filename), true);
         if(!isset($response->status->message)) {
           return $response;
         }
@@ -438,7 +449,7 @@
 
       file_put_contents($filename, $response);
 
-      return json_decode($response);
+      return json_decode(json_encode($response), true);
     }
 
     function getChampionById($champion_id)
@@ -476,22 +487,26 @@
       return json_decode($response);
     }
 
-    function getLatestVersion()
+    function getLatestVersion($region)
     {
         include "config.php";
 
         global $cache_path;
 
-        $url = "https://oc1.api.riotgames.com/lol/static-data/v3/versions";
+        // $url = "https://oc1.api.riotgames.com/lol/static-data/v3/versions";
+        $url = "https://ddragon.leagueoflegends.com/realms/" . $region . ".json";
 
-        $filename = $cache_path.md5($url);
+        // $filename = $cache_path.md5($url);
+        $filename = $region . '_version';
 
         ChromePhp::log($filename);
 
         if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
         {
             $response = json_decode(file_get_contents($filename), true);
-            return isset($response[0]) ? $response[0] : $league_version;
+            $test = $response["v"];
+            
+            return isset($response["v"]) ? $response["v"] : $league_version;
         }
 
         $ch = curl_init();
@@ -509,7 +524,7 @@
           file_put_contents($filename, $response);
 
         $response = json_decode($response, true);
-        return isset($response[0]) ? $response[0] : $league_version;
+        return isset($response["v"]) ? $response["v"] : $league_version;
     }
 
     function getSummonerSpell($spell_id)
@@ -547,10 +562,12 @@
     {
       include "config.php";
 
+      global $version;
       global $cache_path;
       global $cache_summoner_spell;
 
-      $url = "https://oc1.api.riotgames.com/lol/static-data/v3/summoner-spells?locale=en_US&dataById=false&tags=all";
+      // $url = "https://oc1.api.riotgames.com/lol/static-data/v3/summoner-spells?locale=en_US&dataById=false&tags=all";
+      $url = "http://ddragon.leagueoflegends.com/cdn/" . $version . "/data/en_US/summoner.json";
 
       $filename = $cache_path.$cache_summoner_spell.md5($url);
       if( file_exists($filename) )
@@ -578,7 +595,7 @@
     {
       foreach ($summonerSpellAll->data as $value) {
 
-        if($value->id == $spell_id) {
+        if($value->key == $spell_id) {
           return $value;
         }
       }
@@ -591,7 +608,7 @@
       global $cache_path;
       global $cache_champion_mastery;
 
-      $url = "https://oc1.api.riotgames.com/lol/champion-mastery/v3/champion-masteries/by-summoner/" . $summoner_id;
+      $url = "https://oc1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/" . $summoner_id;
 
       $filename = $cache_path.$cache_champion_mastery.md5($url);
       if( file_exists($filename) && ( time() - 84600 < filemtime($filename) ) )
@@ -619,10 +636,12 @@
     {
       include "config.php";
 
+      global $version;
       global $cache_path;
       global $cache_item;
 
-      $url = "https://oc1.api.riotgames.com/lol/static-data/v3/items?locale=en_US&tags=all";
+      // $url = "https://oc1.api.riotgames.com/lol/static-data/v3/items?locale=en_US&tags=all";
+      $url = "http://ddragon.leagueoflegends.com/cdn/" . $version . "/data/en_US/item.json";
 
       $filename = $cache_path.$cache_item.md5($url);
       if( file_exists($filename) )
@@ -652,7 +671,7 @@
       global $cache_path;
       global $cache_champion_mastery;
 
-      $url = "https://oc1.api.riotgames.com/lol/champion-mastery/v3/champion-masteries/by-summoner/" . $summoner_id;
+      $url = "https://oc1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/" . $summoner_id;
 
       $filename = $cache_path.$cache_champion_mastery.md5($url);
       $data = json_decode(file_get_contents($filename));
