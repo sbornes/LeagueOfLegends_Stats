@@ -81,7 +81,7 @@
         $stats['summoner'] = getSummonerByName($summoner_name, $region);
 
         if(isset($stats["summoner"]->status)) {
-          return false;
+          return $stats["summoner"]->status;
         }
 
         $rank = getLeagueByAccount($stats['summoner']->id);

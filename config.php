@@ -1,5 +1,5 @@
 <?php
-	$api_key = "RGAPI-50b15b9e-822a-4b26-b43c-56ea9b3786c1";
+	$api_key = "RGAPI-913818c8-7dbf-48fc-9d24-5c285d4b9add";
 
 	$servername = "localhost";
 	$username = "root";
@@ -55,7 +55,14 @@
 			980 => "Star Guardian Invasion: Normal",
 			990 => "Star Guardian Invasion: Onslaught",
 			1000 => "PROJECT: Hunters",
-			1010 => "Snow ARURF games"
+			1010 => "Snow ARURF games",
+			1020 =>	"One for All games",	
+			1030 =>	"Odyssey Extraction: Intro games",	
+			1040 =>	"Odyssey Extraction: Cadet games",
+			1050 =>	"Odyssey Extraction: Crewmember games",
+			1060 =>	"Odyssey Extraction: Captain games",
+			1070 =>	"Odyssey Extraction: Onslaught games",	
+			1200 =>	"Nexus Blitz games"
 	);
 
 	$summoner_spells_const = array(

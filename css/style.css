@@ -39,7 +39,15 @@ hr {
   width: 100%;
 }
 
-.background {
+#index.background {
+  background: url(../assets/bg.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+#player.background {
   background: url(../assets/backdrop-magic.png) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
